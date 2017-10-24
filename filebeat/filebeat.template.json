@@ -9,7 +9,7 @@
       "_meta": {
         "version": "5.6.3"
       },
-      "date_detection": false,
+      "date_detection": true,
       "dynamic_templates": [
         {
           "strings_as_keyword": {

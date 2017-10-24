@@ -9,7 +9,13 @@
 
 # Ubuntu config location
 # /etc/filebeat/filebeat.yml
-# 
+
+# Start filebeat when instance starts
+# sudo update-rc.d filebeat defaults 95 10
+
+# Start filebeat service
+# sudo /etc/init.d/filebeat start
+
 
 #=========================== Filebeat prospectors =============================
 
