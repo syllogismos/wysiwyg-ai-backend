@@ -145,7 +145,7 @@ structlog.configure(
 logger = logging.getLogger('train_logs')
 logger.setLevel(logging.INFO)
 
-handler = WatchedFileHandler('celery_worker.logs')
+handler = WatchedFileHandler('filebeat/celery_worker.log')
 logger.addHandler(handler)
 
 # CELERY STUFF
