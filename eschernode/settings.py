@@ -149,7 +149,7 @@ handler = WatchedFileHandler('filebeat/celery_worker.log')
 logger.addHandler(handler)
 
 # CELERY STUFF
-# BROKER_URL = 'redis://localhost:6379'
+# CELERY_BROKER_URL = 'redis://localhost:6379'
 # CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_BROKER_URL = 'sqs://AKIAISU4PGJH6TNJ7D2Q:DWMbGw12am06X1qSQuUd0F2ww6iSRvBcU3Na6+dz@'
 CELERY_ACCEPT_CONTENT = ['application/json']
