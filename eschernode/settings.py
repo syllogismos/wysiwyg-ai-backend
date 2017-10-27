@@ -152,6 +152,9 @@ logger.addHandler(handler)
 # CELERY_BROKER_URL = 'redis://localhost:6379'
 # CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_BROKER_URL = 'sqs://AKIAISU4PGJH6TNJ7D2Q:DWMbGw12am06X1qSQuUd0F2ww6iSRvBcU3Na6+dz@'
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'region': 'us-east-1'
+}
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
