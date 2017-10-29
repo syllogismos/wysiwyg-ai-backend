@@ -1,9 +1,27 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from supervised.tasks import add_test, mnist_task
+from supervised.tasks import add_test, mnist_task, launch_exp_task
+from eschernode.settings import mongoClient
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 # Create your views here.
 def index(request):
     # add_test.apply_async([23, 43])
     mnist_task.apply_async()
     return JsonResponse({"Status": 200, "message": "Training Starting"})
+
+@csrf_exempt
+def launchExperiment(request):
+    """
+    launch experiment of a given experiment id
+    """
+    if request.method == 'POST':
+        # print(json.loads(request.body.decode('utf-8')), "POST")
+        json_body = json.loads(request.body.decode('utf-8'))
+        launch_exp_task(json_body['exp_id'])
+        return JsonResponse({"Status": 200, "message": "Launching Experiment"})
+    elif request.method == 'GET':
+        print(request.body)
+        print("GET request to launchExperiment")
+        return JsonResponse({"Status": 200, "message": "Launching Experiment"})

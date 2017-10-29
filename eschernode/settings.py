@@ -14,6 +14,7 @@ import os
 import logging, structlog
 from logging.handlers import WatchedFileHandler
 from structlog.threadlocal import wrap_dict
+from pymongo import MongoClient
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -147,6 +148,12 @@ logger.setLevel(logging.INFO)
 
 handler = WatchedFileHandler('filebeat/celery_worker.log')
 logger.addHandler(handler)
+
+MONGO_HOST = 'localhost'
+MONGO_PORT = 27017
+MONGO_DB = 'eschernode'
+
+mongoClient = MongoClient(MONGO_HOST, MONGO_PORT, maxPoolSize=200)
 
 # CELERY STUFF
 # CELERY_BROKER_URL = 'redis://localhost:6379'
