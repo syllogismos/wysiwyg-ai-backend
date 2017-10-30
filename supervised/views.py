@@ -19,9 +19,9 @@ def launchExperiment(request):
     if request.method == 'POST':
         # print(json.loads(request.body.decode('utf-8')), "POST")
         json_body = json.loads(request.body.decode('utf-8'))
-        launch_exp_task(json_body['exp_id'])
-        return JsonResponse({"Status": 200, "message": "Launching Experiment"})
+        launch_exp_task.apply_async([json_body['exp_id']])
+        return JsonResponse({"status": 200, "message": "Launching Experiment"})
     elif request.method == 'GET':
         print(request.body)
         print("GET request to launchExperiment")
-        return JsonResponse({"Status": 200, "message": "Launching Experiment"})
+        return JsonResponse({"status": 200, "message": "Launching Experiment"})
