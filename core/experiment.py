@@ -61,6 +61,11 @@ experiment = {
 }
 
 def supervised_exp(exp, log):
+    variants = exp['config']['variants']
+    for variant in variants:
+        supervised_exp_single_variant(exp, variant, log)
+
+def supervised_exp_single_variant(exp, variant, log):
     """
     launch a supervised experiment
     """
@@ -73,17 +78,19 @@ def supervised_exp(exp, log):
     # Creating model
     model = EscherNet(network)
 
+    # experiment settings
+    lr = variant['lr']
+    momentum = variant['momentum']
+    epochs = variant['epochs']
+    batch_size = variant['batch_size']
+    test_batch_size = variant['test_batch_size']
+    seed = variant['seed']
+
+    # loss function
+    loss = exp_config['loss']
+
     # Creating optimizer
     optimizer = optim.__dict__[exp_config['optim']]
-
-    # experiment settings
-    lr = exp_config['lr']
-    momentum = exp_config['momentum']
-    epochs = exp_config['epochs']
-    batch_size = exp_config['batch_size']
-    test_batch_size = exp_config['test_batch_size']
-    seed = exp_config['seed']
-    loss = exp_config['loss']
 
     nn_optimizer = optimizer(model.parameters(), lr=lr, momentum=momentum)
     loss_fn = F.__dict__[loss]
@@ -144,7 +151,7 @@ def supervised_test(test_loader, model, loss_fn, epoch, log):
         pred = output.data.max(1, keepdim=True)[1]
         correct += pred.eq(target.data.view_as(pred)).cpu().sum()
     test_loss /= len(test_loader.dataset)
-    log.info('test_log',
+    log.info('val_log',
              test_log = {
                  'epoch': epoch,
                  'loss': test_loss
