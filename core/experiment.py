@@ -87,13 +87,13 @@ def supervised_exp_single_variant(exp, variant, log):
     seed = variant['seed']
 
     # loss function
-    loss = exp_config['loss']
+    loss_type = exp_config['loss']
 
     # Creating optimizer
     optimizer = optim.__dict__[exp_config['optim']]
 
     nn_optimizer = optimizer(model.parameters(), lr=lr, momentum=momentum)
-    loss_fn = F.__dict__[loss]
+    loss_fn = F.__dict__[loss_type]
 
     # Loading dataset
     train_loader = torch.utils.data.DataLoader(
