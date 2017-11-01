@@ -4,6 +4,7 @@ from supervised.tasks import add_test, mnist_task, launch_exp_task
 from eschernode.settings import mongoClient
 from django.views.decorators.csrf import csrf_exempt
 import json
+import time
 
 # Create your views here.
 def index(request):
@@ -19,5 +20,6 @@ def launchExperiment(request):
     if request.method == 'POST':
         # print(json.loads(request.body.decode('utf-8')), "POST")
         json_body = json.loads(request.body.decode('utf-8'))
+        # time.sleep(10)
         launch_exp_task.apply_async([json_body['exp_id']])
         return JsonResponse({"status": 200, "message": "Launching Experiment"})

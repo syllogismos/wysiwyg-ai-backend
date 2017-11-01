@@ -153,7 +153,7 @@ MONGO_HOST = 'localhost'
 MONGO_PORT = 27017
 MONGO_DB = 'eschernode'
 
-mongoClient = MongoClient(MONGO_HOST, MONGO_PORT, maxPoolSize=200)
+mongoClient = MongoClient(MONGO_HOST, MONGO_PORT, maxPoolSize=200, connect=False)
 
 # CELERY STUFF
 # CELERY_BROKER_URL = 'redis://localhost:6379'

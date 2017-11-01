@@ -62,10 +62,10 @@ experiment = {
 
 def supervised_exp(exp, log):
     variants = exp['config']['variants']
-    for variant in variants:
-        supervised_exp_single_variant(exp, variant, log)
+    for idx, variant in enumerate(variants):
+        supervised_exp_single_variant(exp, idx, log)
 
-def supervised_exp_single_variant(exp, variant, log):
+def supervised_exp_single_variant(exp, variant_idx, log):
     """
     launch a supervised experiment
     """
@@ -78,6 +78,8 @@ def supervised_exp_single_variant(exp, variant, log):
 
     # Creating model
     model = EscherNet(network)
+
+    variant = exp['config']['variants'][variant_idx]
 
     # experiment settings
     lr = float(variant['lr'])
@@ -142,14 +144,16 @@ def supervised_exp_single_variant(exp, variant, log):
             ),
             batch_size=test_batch_size, shuffle=False
         )
-
+    log_info = {
+        'variant': variant_idx
+    }
     # Traning
     for epoch in range(1, epochs + 1):
-        supervised_train(train_loader, model, nn_optimizer, loss_fn, epoch, log)
-        supervised_test(test_loader, model, loss_fn, epoch, log)
+        supervised_train(train_loader, model, nn_optimizer, loss_fn, epoch, log, log_info)
+        supervised_test(test_loader, model, loss_fn, epoch, log, log_info)
 
 
-def supervised_train(train_loader, model, nn_optimizer, loss_fn, epoch, log):
+def supervised_train(train_loader, model, nn_optimizer, loss_fn, epoch, log, log_info):
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = Variable(data), Variable(target)
@@ -163,14 +167,15 @@ def supervised_train(train_loader, model, nn_optimizer, loss_fn, epoch, log):
                      train_log = {
                          'epoch': epoch,
                          'loss': loss.data[0],
-                         'batch_idx': batch_idx
+                         'batch_idx': batch_idx,
+                         'variant': log_info['variant']
                      }
             )
 
     pass
 
 
-def supervised_test(test_loader, model, loss_fn, epoch, log):
+def supervised_test(test_loader, model, loss_fn, epoch, log, log_info):
     model.eval()
     test_loss = 0
     correct = 0
@@ -184,7 +189,8 @@ def supervised_test(test_loader, model, loss_fn, epoch, log):
     log.info('val_log',
              test_log = {
                  'epoch': epoch,
-                 'loss': test_loss
+                 'loss': test_loss,
+                 'variant': log_info['variant']
              }
     )
     pass
