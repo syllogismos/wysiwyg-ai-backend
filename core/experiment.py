@@ -69,7 +69,8 @@ def supervised_exp_single_variant(exp, variant, log):
     """
     launch a supervised experiment
     """
-    dataset = getDatasetById(exp['dataset'])
+    # dataset = getDatasetById(exp['dataset'])
+    dataset_name = exp['dataset']
     nnmodel = getNNModelById(exp['model'])
     network = nnmodel['network']
 
@@ -79,12 +80,12 @@ def supervised_exp_single_variant(exp, variant, log):
     model = EscherNet(network)
 
     # experiment settings
-    lr = variant['lr']
-    momentum = variant['momentum']
-    epochs = variant['epochs']
-    batch_size = variant['batch_size']
-    test_batch_size = variant['test_batch_size']
-    seed = variant['seed']
+    lr = float(variant['lr'])
+    momentum = float(variant['momentum'])
+    epochs = int(variant['epochs'])
+    batch_size = int(variant['batch_size'])
+    test_batch_size = int(variant['test_batch_size'])
+    seed = int(variant['seed'])
 
     # loss function
     loss_type = exp_config['loss']
@@ -96,22 +97,51 @@ def supervised_exp_single_variant(exp, variant, log):
     loss_fn = F.__dict__[loss_type]
 
     # Loading dataset
-    train_loader = torch.utils.data.DataLoader(
-        datasets.MNIST('../data', train=True, download=True, 
-                       transform=transforms.Compose([
-                           transforms.ToTensor(),
-                           transforms.Normalize((0.1307, ), (0.3081, ))
-                       ])),
-                       batch_size=batch_size, shuffle=True
-    )
 
-    test_loader = torch.utils.data.DataLoader(
-        datasets.MNIST('../data', train=False, transform=transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.1307, ), (0.3081, ))
-        ])),
-        batch_size=test_batch_size, shuffle=True
-    )
+    if dataset_name == 'MNIST':
+        train_loader = torch.utils.data.DataLoader(
+            datasets.MNIST('./data/mnist', train=True, download=True, 
+                        transform=transforms.Compose([
+                            transforms.ToTensor(),
+                            transforms.Normalize((0.1307, ), (0.3081, ))
+                        ])),
+                        batch_size=batch_size, shuffle=True
+        )
+
+        test_loader = torch.utils.data.DataLoader(
+            datasets.MNIST('./data/mnist', train=False, transform=transforms.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize((0.1307, ), (0.3081, ))
+            ])),
+            batch_size=test_batch_size, shuffle=True
+        )
+    elif dataset_name == 'tiny-imagenet-test':
+        train_loader = torch.utils.data.DataLoader(
+            datasets.ImageFolder(
+                './data/tiny-imagenet-200/train',
+                transforms.Compose([
+                    transforms.RandomSizedCrop(224),
+                    transforms.ToTensor(),
+                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                         std=[0.229, 0.224, 0.225])
+                ])
+            ),
+            batch_size=batch_size, shuffle=True
+        )
+        
+        test_loader = torch.utils.data.DataLoader(
+            datasets.ImageFolder(
+                './data/tiny-imagenet-200/val',
+                transforms.Compose([
+                    transforms.Scale(256),
+                    transforms.CenterCrop(224),
+                    transforms.ToTensor(),
+                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                         std=[0.229, 0.224, 0.225])
+                ])
+            ),
+            batch_size=test_batch_size, shuffle=False
+        )
 
     # Traning
     for epoch in range(1, epochs + 1):

@@ -31,7 +31,7 @@ def mnist_task():
     log = logger.new(user='anil')
     experiment(log)
 
-@task(name='launch_exp_task', queue='launch_exp')
+@task(name='launch_exp_task', queue='launch_exp_latest')
 def launch_exp_task(exp_id):
     exp = getExperimentById(exp_id)
     print(exp)

@@ -113,6 +113,8 @@ def parse_single_node(node):
     if layer_type == 'RS':
         x = int(config['x'])
         y = int(config['y'])
+        if x == 0:
+            return lambda z: z.view(z.size(0), y)
         return lambda z: z.view(x, y)
     else:
         raise NotImplementedError
