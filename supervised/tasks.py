@@ -1,6 +1,6 @@
 from celery.decorators import task
 from celery.utils.log import get_task_logger
-import structlog
+import structlog, os
 from core.mongo_queries import getExperimentById, getUserById
 from core.mnist import experiment
 from core.experiment import launch_exp
@@ -34,6 +34,7 @@ def mnist_task():
 @task(name='launch_exp_task', queue='launch_exp_latest')
 def launch_exp_task(exp_id):
     exp = getExperimentById(exp_id)
-    print(exp)
+    # print(exp)
+    # print(os.environ['DJANGO_RUNSERVER'])
     log = logger.new(user=exp['user'], exp=str(exp['_id']))
     launch_exp(exp, log)

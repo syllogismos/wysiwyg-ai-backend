@@ -20,6 +20,6 @@ def launchExperiment(request):
     if request.method == 'POST':
         # print(json.loads(request.body.decode('utf-8')), "POST")
         json_body = json.loads(request.body.decode('utf-8'))
-        # time.sleep(10)
-        launch_exp_task.apply_async([json_body['exp_id']])
+        # time.sleep(2)
+        # launch_exp_task.apply_async([json_body['exp_id']])
         return JsonResponse({"status": 200, "message": "Launching Experiment"})

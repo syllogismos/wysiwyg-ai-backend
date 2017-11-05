@@ -149,9 +149,18 @@ logger.setLevel(logging.INFO)
 handler = WatchedFileHandler('filebeat/celery_worker.log')
 logger.addHandler(handler)
 
-MONGO_HOST = 'localhost'
-MONGO_PORT = 27017
-MONGO_DB = 'eschernode'
+if 'DJANGO_RUNSERVER' not in os.environ:
+    os.environ['DJANGO_RUNSERVER'] = 'dev'
+
+if os.environ['DJANGO_RUNSERVER'] == 'dev':
+    MONGO_HOST = 'localhost'
+    MONGO_PORT = 27017
+    MONGO_DB = 'eschernode'
+
+elif os.environ['DJANGO_RUNSERVER'] == 'prod':
+    MONGO_HOST = 'localhost'
+    MONGO_PORT = 27017
+    MONGO_DB = 'eschernode'
 
 mongoClient = MongoClient(MONGO_HOST, MONGO_PORT, maxPoolSize=200, connect=False)
 
