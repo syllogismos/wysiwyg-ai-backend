@@ -31,10 +31,18 @@ def mnist_task():
     log = logger.new(user='anil')
     experiment(log)
 
-@task(name='launch_exp_task', queue='launch_exp_latest')
-def launch_exp_task(exp_id):
+@task(name='launch_sup_exp_task', queue='launch_sup_exp')
+def launch_sup_exp_task(exp_id):
     exp = getExperimentById(exp_id)
     # print(exp)
     # print(os.environ['DJANGO_RUNSERVER'])
     log = logger.new(user=exp['user'], exp=str(exp['_id']))
-    launch_exp(exp, log)
+    launch_exp(exp)
+
+
+@task(name='launch_rl_exp_task', queue='launch_rl_exp')
+def launch_rl_exp_task(exp_id):
+    exp = getExperimentById(exp_id)
+    print(exp)
+    launch_exp(exp)
+    

@@ -10,12 +10,12 @@ import torch
 from torchvision import datasets, transforms
 from torch.autograd import Variable
 from collections import deque
-import json, math
+import json, math, structlog
 
 
 
 
-def launch_exp(exp, log):
+def launch_exp(exp):
     """
     given the exp object launch the relevant experiment
 
@@ -25,6 +25,8 @@ def launch_exp(exp, log):
     if exp['type'] == 'rl':
         pass
     elif exp['type'] == 'supervised':
+        logger = structlog.get_logger('train_logs')
+        log = logger.new(user=exp['user'], exp=str(exp['_id']))
         log.info('experiment launched')
         supervised_exp(exp, log)
         pass
