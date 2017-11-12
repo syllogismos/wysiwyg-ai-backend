@@ -2,9 +2,12 @@
 {
 # make sure aws is installed and configured in the root
 
+
+# anaconda right environment
 # make sure anaconda is accessible from the root
 # modify /root/.bashrc to include anaconda in $PATH
 # also source the conda env in this file
+# modifying bash script is not working so i change the PATH and PYTHONPATH in this script itself
 
 
 # Get experimentid and variant index from tags
@@ -16,13 +19,15 @@ VARIANT="`aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID"
 export AWS_DEFAULT_REGION='us-east-1'
 
 # wait until filebeat is started
-# until pids=$(pidof filebeat)
-# do   
-#     sleep 5
-# done
+until pids=$(pidof filebeat)
+do   
+    sleep 5
+done
 
 # source activate rllabpp
-export PYTHONPATH=/home/ubuntu/rllabpp:$PYTHONPATH
+export PATH=/home/ubuntu/anaconda2/envs/rllabpp/bin:$PATH
+export PYTHONPATH=/home/ubuntu/anaconda2/envs/rllabpp/bin:/home/ubuntu/rllabpp:/home/ubuntu:/home/ubuntu/anaconda2/envs/rllabpp/lib/python36.zip:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6/lib-dynload:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6/site-packages:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6/site-packages/Mako-1.0.7-py3.6.egg:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6/site-packages/cycler-0.10.0-py3.6.egg:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6/site-packages/IPython/extensions:$PYTHONPATH
+
 cd /home/ubuntu/rllabpp
 
 # start s3 sync periodically
