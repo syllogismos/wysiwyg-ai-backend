@@ -6,12 +6,17 @@
 #
 # You can find the full configuration reference here:
 # https://www.elastic.co/guide/en/beats/filebeat/index.html
+# Install from here https://www.elastic.co/guide/en/beats/filebeat/current/setup-repositories.html
+# using apt
 
 # Ubuntu config location
 # /etc/filebeat/filebeat.yml
 
 # Start filebeat when instance starts
 # sudo update-rc.d filebeat defaults 95 10
+# above method doesnt work on ubuntu 16.04, you have to manage using systemctl
+# just like elasticsearch service
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html
 
 # Start filebeat service
 # sudo /etc/init.d/filebeat start
