@@ -35,6 +35,7 @@ filebeat.prospectors:
   # Paths that should be crawled and fetched. Glob based paths.
   paths:
     - /home/ubuntu/dashboard_backend/filebeat/*.log
+    - /home/ubuntu/rllabpp/structlogs.log
     # - /var/log/*.log
     - /Users/anil/Code/elk/*.log
     - /Users/anil/Code/tiny-imagenet/*.log
@@ -102,7 +103,7 @@ filebeat.prospectors:
 #-------------------------- Elasticsearch output ------------------------------
 output.elasticsearch:
   # Array of hosts to connect to.
-  hosts: ["localhost:9200"]
+  hosts: ["172.30.0.17:9200"]
 
   # Optional protocol and basic auth credentials.
   #protocol: "https"

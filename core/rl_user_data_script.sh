@@ -13,8 +13,25 @@
 # Get experimentid and variant index from tags
 INSTANCE_ID="`wget -qO- http://instance-data/latest/meta-data/instance-id`"
 REGION="`wget -qO- http://instance-data/latest/meta-data/placement/availability-zone | sed -e 's:\([0-9][0-9]*\)[a-z]*\$:\\1:'`"
-EXPERIMENT="`aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=ExperimentId" --region $REGION --output=text | cut -f5`"
-VARIANT="`aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=VariantIndex" --region $REGION --output=text | cut -f5`"
+
+EXPERIMENT="notyetset"
+VARIANT="notyetset"
+until [ "$EXPERIMENT" != "notyetset" ]
+do
+    EXPERIMENT="`aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=ExperimentId" --region $REGION --output=text | cut -f5`"
+    echo "querying ExperimentId tag"
+    echo $EXPERIMENT
+    sleep 5
+done
+
+until [ "$VARIANT" != "notyetset" ]
+do
+    VARIANT="`aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=VariantIndex" --region $REGION --output=text | cut -f5`"
+    echo "querying VariantIndex tag"
+    echo $VARIANT
+    sleep 5
+done
+
 
 export AWS_DEFAULT_REGION='us-east-1'
 
