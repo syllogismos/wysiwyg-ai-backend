@@ -57,7 +57,7 @@ aws s3 sync --quiet /home/ubuntu/rllabpp/data/local/ s3://karaka_test/$EXPERIMEN
 
 while /bin/true; do
     aws s3 sync  --quiet /home/ubuntu/rllabpp/data/local/ s3://karaka_test/$EXPERIMENT/$VARIANT/
-    sleep 2000
+    sleep 1000
 done & echo sync initiated
 while /bin/true; do
     if [ -z $(curl -Is http://169.254.169.254/latest/meta-data/spot/termination-time | head -1 | grep 404 | cut -d \  -f 2) ]
