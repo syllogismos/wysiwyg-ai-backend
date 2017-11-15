@@ -11,6 +11,10 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 from collections import deque
 import json, math, structlog
+import boto3
+
+
+ec2 = boto3.resource('ec2')
 
 
 
@@ -23,14 +27,65 @@ def launch_exp(exp):
     log: structlog instance with expid and userid
     """
     if exp['type'] == 'rl':
+        launch_rl_exp(exp)
         pass
     elif exp['type'] == 'supervised':
         logger = structlog.get_logger('train_logs')
         log = logger.new(user=exp['user'], exp=str(exp['_id']))
         log.info('experiment launched')
-        supervised_exp(exp, log)
+        launch_supervised_exp(exp, log)
         pass
     pass
+
+
+def launch_rl_exp(exp):
+    """
+    exp: exp dict
+    start spot/ec2 instances with half the prices as cutoff for each experiment variant
+    """
+    instance = ec2.create_instances(
+        ImageId='ami-40249f3a',
+        InstanceType='t1.micro',
+        KeyName='facebook',
+        SecurityGroups=['sg-8ed5a8eb'],
+        TagSpecifications=[
+            {
+                'ResourceType': 'instance',
+                'Tags': [
+                    {
+                        'Key': 'Name',
+                        'Value': 'boto3 test'
+                    }
+                ]
+            }
+        ]
+    )
+
+    """
+    instance = ec2.create_instances(
+    ...: MaxCount=1,
+    ...: MinCount=1,
+    ...: ImageId='ami-40249f3a',
+    ...: InstanceType='t1.micro',
+    ...: KeyName='facebook',
+    ...: NetworkInterfaces= [{
+    ...: 'SubnetId': 'subnet-347a7e1c',
+    ...: 'Groups': ['sg-8ed5a8eb'],
+    ...: 'AssociatePublicIpAddress': True,
+    ...: 'DeviceIndex': 0
+    ...: }],
+    ...: TagSpecifications=[
+    ...: {
+    ...: 'ResourceType': 'instance',
+    ...: 'Tags': [
+    ...: {'Key': 'Name', 'Value': 'boto3 test'}
+    ...: ]
+    ...: }
+    ...: ]
+    ...: )
+    """
+    pass
+
 
 dataset = {
     'user': '59f56c75f1c16a64a00eaaef',
@@ -62,7 +117,7 @@ experiment = {
     }
 }
 
-def supervised_exp(exp, log):
+def launch_supervised_exp(exp, log):
     variants = exp['config']['variants']
     for idx, variant in enumerate(variants):
         supervised_exp_single_variant(exp, idx, log)

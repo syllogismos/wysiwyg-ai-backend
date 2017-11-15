@@ -14,9 +14,10 @@
 INSTANCE_ID="`wget -qO- http://instance-data/latest/meta-data/instance-id`"
 REGION="`wget -qO- http://instance-data/latest/meta-data/placement/availability-zone | sed -e 's:\([0-9][0-9]*\)[a-z]*\$:\\1:'`"
 
-EXPERIMENT="notyetset"
-VARIANT="notyetset"
-until [ "$EXPERIMENT" != "notyetset" ]
+# EXPERIMENT="notyetset"
+# VARIANT="notyetset"
+# https://serverfault.com/questions/7503/how-to-determine-if-a-bash-variable-is-empty
+until [ -n "$EXPERIMENT" ] # start querying for ExperimentId tag and be in loop till it is set
 do
     EXPERIMENT="`aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=ExperimentId" --region $REGION --output=text | cut -f5`"
     echo "querying ExperimentId tag"
@@ -24,7 +25,7 @@ do
     sleep 5
 done
 
-until [ "$VARIANT" != "notyetset" ]
+until [ -n "$VARIANT" ]
 do
     VARIANT="`aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=VariantIndex" --region $REGION --output=text | cut -f5`"
     echo "querying VariantIndex tag"
@@ -46,6 +47,10 @@ export PATH=/home/ubuntu/anaconda2/envs/rllabpp/bin:$PATH
 export PYTHONPATH=/home/ubuntu/anaconda2/envs/rllabpp/bin:/home/ubuntu/rllabpp:/home/ubuntu:/home/ubuntu/anaconda2/envs/rllabpp/lib/python36.zip:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6/lib-dynload:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6/site-packages:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6/site-packages/Mako-1.0.7-py3.6.egg:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6/site-packages/cycler-0.10.0-py3.6.egg:/home/ubuntu/anaconda2/envs/rllabpp/lib/python3.6/site-packages/IPython/extensions:$PYTHONPATH
 
 cd /home/ubuntu/rllabpp
+
+# update the rllabpp repo to master https://stackoverflow.com/questions/1125968/how-do-i-force-git-pull-to-overwrite-local-files
+git fetch --all
+git reset --hard origin/runenv
 
 # start s3 sync periodically
 aws s3 sync --quiet /home/ubuntu/rllabpp/data/local/ s3://karaka_test/$EXPERIMENT/$VARIANT/
@@ -69,7 +74,7 @@ done & echo log sync initiated
 
 
 # start the experiment
-python -u sandbox/rocky/tf/launchers/algo_gym_stub.py --expId $EXPERIMENT
+python -u sandbox/rocky/tf/launchers/algo_gym_stub.py --expId $EXPERIMENT --variantId $VARIANT
 
 # Copy the checkpoint logs and user data logs
 aws s3 cp --recursive --quiet /home/ubuntu/rllabpp/data/local s3://karaka_test/$EXPERIMENT/$VARIANT/
