@@ -56,27 +56,31 @@ git reset --hard origin/runenv
 aws s3 sync --quiet /home/ubuntu/rllabpp/data/local/ s3://karaka_test/$EXPERIMENT/$VARIANT/
 
 while /bin/true; do
-aws s3 sync  --quiet /home/ubuntu/rllabpp/data/local/ s3://karaka_test/$EXPERIMENT/$VARIANT/
-sleep 200
+    aws s3 sync  --quiet /home/ubuntu/rllabpp/data/local/ s3://karaka_test/$EXPERIMENT/$VARIANT/
+    sleep 2000
 done & echo sync initiated
 while /bin/true; do
-if [ -z $(curl -Is http://169.254.169.254/latest/meta-data/spot/termination-time | head -1 | grep 404 | cut -d \  -f 2) ]
-then
-logger "Running shutdown hook."
-aws s3 cp --recursive --quiet /home/ubuntu/rllabpp/data/local s3://karaka_test/$EXPERIMENT/$VARIANT/
-# aws s3 cp  --quiet /home/ubuntu/rllabpp/data/local/user_data.log s3://karaka_test/$EXPERIMENT/$VARIANT/user_data.log
-break
-else
-# Spot instance not yet marked for termination.
-sleep 5
-fi
+    if [ -z $(curl -Is http://169.254.169.254/latest/meta-data/spot/termination-time | head -1 | grep 404 | cut -d \  -f 2) ]
+    then
+        logger "Running shutdown hook."
+        # aws s3 cp --recursive --quiet /home/ubuntu/rllabpp/data/local s3://karaka_test/$EXPERIMENT/$VARIANT/
+        aws s3 sync --quiet /home/ubuntu/rllabpp/data/local/ s3://karaka_test/$EXPERIMENT/$VARIANT/
+        break
+    else
+        # Spot instance not yet marked for termination.
+        sleep 5
+    fi
 done & echo log sync initiated
 
 
 # start the experiment
 python -u sandbox/rocky/tf/launchers/algo_gym_stub.py --expId $EXPERIMENT --variantId $VARIANT
 
-# Copy the checkpoint logs and user data logs
-aws s3 cp --recursive --quiet /home/ubuntu/rllabpp/data/local s3://karaka_test/$EXPERIMENT/$VARIANT/
-aws s3 cp --quiet /home/ubuntu/rllabpp/data/local/user_data.log s3://karaka_test/$EXPERIMENT/$VARIANT/user_data.log
+# Copy the checkpoint logs and user data logs one final time
+aws s3 sync --quiet /home/ubuntu/rllabpp/data/local/ s3://karaka_test/$EXPERIMENT/$VARIANT/
+# aws s3 cp --recursive --quiet /home/ubuntu/rllabpp/data/local s3://karaka_test/$EXPERIMENT/$VARIANT/
+
+# terminate the instance after dumping the data in S3, after 60 seconds
+sleep 60
+aws ec2 terminate-instances --instance-ids $INSTANCE_ID --region $REGION
 } >> /home/ubuntu/rllabpp/data/local/user_data.log 2>&1
