@@ -33,7 +33,7 @@ def launch_exp(exp):
     elif exp['type'] == 'supervised':
         logger = structlog.get_logger('train_logs')
         log = logger.new(user=exp['user'], exp=str(exp['_id']))
-        log.info('exp_timeline', timeline={'message': 'Experiment Launched'})
+        log.info('exp_timeline', timeline={'message': 'Experiment Launched', 'level': 'info'})
         launch_supervised_exp(exp, log)
         pass
     pass
@@ -49,7 +49,7 @@ def launch_rl_exp(exp):
     log.info('exp_timeline', timeline={'message': 'Experiment Launched'})
     no_of_variants = len(exp['config']['variants'])
     for variantIndex in range(no_of_variants):
-        log.info('exp_timeline',  timeline={'message': 'Machine started for variant %s' %variantIndex})
+        log.info('exp_timeline',  timeline={'message': 'Launching machine for variant %s' %variantIndex, 'level': 'info'})
         instance = ec2.create_instances(
             MaxCount=1,
             MinCount=1,
@@ -73,60 +73,14 @@ def launch_rl_exp(exp):
                 }
             ]
         )
+        log.info('exp_timeline', timeline={
+            'message': 'Machine successfully started for varint %s' %variantIndex,
+            'variant': variantIndex,
+            'instance_id': instance[0].instance_id,
+            'private_ip': instance[0].private_ip_address,
+            'level': 'debug'
+        })
 
-    """
-instance = ec2.create_instances(
-    ...: MaxCount=1,
-    ...: MinCount=1,
-    ...: ImageId='ami-dcec6da6',
-    ...: InstanceType='t2.medium',
-    ...: UserData=user_script,
-    ...: KeyName='facebook',
-    ...: NetworkInterfaces= [{
-    ...: 'SubnetId': 'subnet-347a7e1c',
-    ...: 'Groups': ['sg-8ed5a8eb'],
-    ...: 'AssociatePublicIpAddress': True,
-    ...: 'DeviceIndex': 0
-    ...: }],
-    ...: TagSpecifications=[
-    ...: {
-    ...: 'ResourceType': 'instance',
-    ...: 'Tags': [
-    ...: {'Key': 'Name', 'Value': 'From Boto Variant 0 Test'},
-    ...: {'Key': 'ExperimentId', 'Value': '5a0c79a52a479337b2e67385'},
-    ...: {'Key': 'VariantIndex', 'Value': '0'}
-    ...: ]
-    ...: }
-    ...: ]
-    ...: )
-
-
-
-
-
-
-    instance = ec2.create_instances(
-    ...: MaxCount=1,
-    ...: MinCount=1,
-    ...: ImageId='ami-40249f3a',
-    ...: InstanceType='t1.micro',
-    ...: KeyName='facebook',
-    ...: NetworkInterfaces= [{
-    ...: 'SubnetId': 'subnet-347a7e1c',
-    ...: 'Groups': ['sg-8ed5a8eb'],
-    ...: 'AssociatePublicIpAddress': True,
-    ...: 'DeviceIndex': 0
-    ...: }],
-    ...: TagSpecifications=[
-    ...: {
-    ...: 'ResourceType': 'instance',
-    ...: 'Tags': [
-    ...: {'Key': 'Name', 'Value': 'boto3 test'}
-    ...: ]
-    ...: }
-    ...: ]
-    ...: )
-    """
     pass
 
 
