@@ -2,6 +2,7 @@ from __future__ import print_function
 
 from core.mongo_queries import getNNModelById, getExperimentById, getUserById
 from core.mongo_queries import getDatasetById
+from core.config import RLLAB_AMI
 
 from core.eschernet import EscherNet
 import torch.optim as optim
@@ -32,7 +33,7 @@ def launch_exp(exp):
     elif exp['type'] == 'supervised':
         logger = structlog.get_logger('train_logs')
         log = logger.new(user=exp['user'], exp=str(exp['_id']))
-        log.info('experiment launched')
+        log.info('exp_timeline', timeline={'message': 'Experiment Launched'})
         launch_supervised_exp(exp, log)
         pass
     pass
@@ -43,25 +44,67 @@ def launch_rl_exp(exp):
     exp: exp dict
     start spot/ec2 instances with half the prices as cutoff for each experiment variant
     """
-    instance = ec2.create_instances(
-        ImageId='ami-40249f3a',
-        InstanceType='t1.micro',
-        KeyName='facebook',
-        SecurityGroups=['sg-8ed5a8eb'],
-        TagSpecifications=[
-            {
-                'ResourceType': 'instance',
-                'Tags': [
-                    {
-                        'Key': 'Name',
-                        'Value': 'boto3 test'
-                    }
-                ]
-            }
-        ]
-    )
+    logger = structlog.get_logger('train_logs')
+    log = logger.new(user=exp['user'], exp=str(exp['_id']))
+    log.info('exp_timeline', timeline={'message': 'Experiment Launched'})
+    no_of_variants = len(exp['config']['variants'])
+    for variantIndex in range(no_of_variants):
+        log.info('exp_timeline',  timeline={'message': 'Machine started for variant %s' %variantIndex})
+        instance = ec2.create_instances(
+            MaxCount=1,
+            MinCount=1,
+            ImageId=RLLAB_AMI,
+            InstanceType=exp['config']['machine_type'],
+            KeyName='facebook',
+            NetworkInterfaces=[{
+                'SubnetId': 'subnet-347a7e1c',
+                'Groups': ['sg-8ed5a8eb'],
+                'AssociatePublicIpAddress': True,
+                'DeviceIndex': 0
+            }],
+            TagSpecifications=[
+                {
+                    'ResourceType': 'instance',
+                    'Tags': [
+                        { 'Key': 'Name', 'Value': 'RL Experiment' },
+                        { 'Key': 'ExperimentId', 'Value': exp['_id'] },
+                        { 'Key': 'VariantIndex', 'Value': variantIndex }
+                    ]
+                }
+            ]
+        )
 
     """
+instance = ec2.create_instances(
+    ...: MaxCount=1,
+    ...: MinCount=1,
+    ...: ImageId='ami-dcec6da6',
+    ...: InstanceType='t2.medium',
+    ...: UserData=user_script,
+    ...: KeyName='facebook',
+    ...: NetworkInterfaces= [{
+    ...: 'SubnetId': 'subnet-347a7e1c',
+    ...: 'Groups': ['sg-8ed5a8eb'],
+    ...: 'AssociatePublicIpAddress': True,
+    ...: 'DeviceIndex': 0
+    ...: }],
+    ...: TagSpecifications=[
+    ...: {
+    ...: 'ResourceType': 'instance',
+    ...: 'Tags': [
+    ...: {'Key': 'Name', 'Value': 'From Boto Variant 0 Test'},
+    ...: {'Key': 'ExperimentId', 'Value': '5a0c79a52a479337b2e67385'},
+    ...: {'Key': 'VariantIndex', 'Value': '0'}
+    ...: ]
+    ...: }
+    ...: ]
+    ...: )
+
+
+
+
+
+
     instance = ec2.create_instances(
     ...: MaxCount=1,
     ...: MinCount=1,

@@ -19,24 +19,12 @@ def adding(a, b):
     return a + b
 
 
-@task(name='train_nn', queue='escher_train_nn')
-def train_neural_netowrk(userId, expId):
-    experiment = getExperimentById(expId)
-    user = getUserById(userId)
-    networkId = experiment['network_json']
-    # network = getNetworkById(networkId)
-
-@task(name='mnist_test', queue='mnist_test')
-def mnist_task():
-    log = logger.new(user='anil')
-    experiment(log)
-
 @task(name='launch_sup_exp_task', queue='launch_sup_exp')
 def launch_sup_exp_task(exp_id):
     exp = getExperimentById(exp_id)
     # print(exp)
     # print(os.environ['DJANGO_RUNSERVER'])
-    log = logger.new(user=exp['user'], exp=str(exp['_id']))
+    # log = logger.new(user=exp['user'], exp=str(exp['_id']))
     launch_exp(exp)
 
 
