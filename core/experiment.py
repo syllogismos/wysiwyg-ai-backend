@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from core.mongo_queries import getNNModelById, getExperimentById, getUserById
 from core.mongo_queries import getDatasetById
-from core.config import RLLAB_AMI
+from core.config import RLLAB_AMI, USER_DATA
 
 from core.eschernet import EscherNet
 import torch.optim as optim
@@ -47,14 +47,18 @@ def launch_rl_exp(exp):
     logger = structlog.get_logger('train_logs')
     log = logger.new(user=exp['user'], exp=str(exp['_id']))
     log.info('exp_timeline', timeline={'message': 'Experiment Launched'})
+    print("lol")
     no_of_variants = len(exp['config']['variants'])
+    print(no_of_variants)
     for variantIndex in range(no_of_variants):
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         log.info('exp_timeline',  timeline={'message': 'Launching machine for variant %s' %variantIndex, 'level': 'info'})
         instance = ec2.create_instances(
             MaxCount=1,
             MinCount=1,
             ImageId=RLLAB_AMI,
             InstanceType=exp['config']['machine_type'],
+            UserData=USER_DATA,
             KeyName='facebook',
             NetworkInterfaces=[{
                 'SubnetId': 'subnet-347a7e1c',
@@ -67,12 +71,14 @@ def launch_rl_exp(exp):
                     'ResourceType': 'instance',
                     'Tags': [
                         { 'Key': 'Name', 'Value': 'RL Experiment' },
-                        { 'Key': 'ExperimentId', 'Value': exp['_id'] },
-                        { 'Key': 'VariantIndex', 'Value': variantIndex }
+                        { 'Key': 'ExperimentId', 'Value': str(exp['_id']) },
+                        { 'Key': 'VariantIndex', 'Value': str(variantIndex) }
                     ]
                 }
             ]
         )
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        print(instance)
         log.info('exp_timeline', timeline={
             'message': 'Machine successfully started for varint %s' %variantIndex,
             'variant': variantIndex,
