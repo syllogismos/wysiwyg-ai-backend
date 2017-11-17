@@ -35,7 +35,7 @@ filebeat.prospectors:
   # Paths that should be crawled and fetched. Glob based paths.
   paths:
     - /home/ubuntu/dashboard_backend/filebeat/*.log
-    - /home/ubuntu/rllabpp/structlogs.log
+    - /home/ubuntu/rllabpp/data/local/structlogs.log
     # - /var/log/*.log
     - /Users/anil/Code/elk/*.log
     - /Users/anil/Code/tiny-imagenet/*.log

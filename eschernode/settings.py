@@ -158,7 +158,7 @@ if os.environ['DJANGO_RUNSERVER'] == 'dev':
     MONGO_DB = 'eschernode'
 
 elif os.environ['DJANGO_RUNSERVER'] == 'prod':
-    MONGO_HOST = 'localhost'
+    MONGO_HOST = '172.30.0.169'
     MONGO_PORT = 27017
     MONGO_DB = 'eschernode'
 
