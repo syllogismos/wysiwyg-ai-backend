@@ -150,14 +150,14 @@ handler = WatchedFileHandler('filebeat/celery_worker.log')
 logger.addHandler(handler)
 
 if 'DJANGO_RUNSERVER' not in os.environ:
-    os.environ['DJANGO_RUNSERVER'] = 'dev'
+    os.environ['ESCHERNODE_ENV'] = 'prod'
 
-if os.environ['DJANGO_RUNSERVER'] == 'dev':
+if os.environ['ESCHERNODE_ENV'] == 'dev':
     MONGO_HOST = 'localhost'
     MONGO_PORT = 27017
     MONGO_DB = 'eschernode'
 
-elif os.environ['DJANGO_RUNSERVER'] == 'prod':
+elif os.environ['ESCHERNODE_ENV'] == 'prod':
     MONGO_HOST = '172.30.0.169'
     MONGO_PORT = 27017
     MONGO_DB = 'eschernode'
