@@ -10,7 +10,7 @@ logger = structlog.get_logger('train_logs')
 @task(name='simple add test', queue='add_test')
 def add_test(a, b):
     log = logger.new(request_id='aniasdfkjasfdk')
-    log.info("adding a and b")
+    log.info("test")
     return adding(a, b)
 
 
