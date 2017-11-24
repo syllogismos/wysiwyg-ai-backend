@@ -10,3 +10,6 @@ https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-ge
 # ulimit settings
 http://posidev.com/blog/2009/06/04/set-ulimit-parameters-on-ubuntu/
 
+
+# install nginx, nvm, pm2
+
