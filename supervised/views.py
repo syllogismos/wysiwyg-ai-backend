@@ -9,7 +9,7 @@ import time
 
 # Create your views here.
 def index(request):
-    # add_test.apply_async([23, 43])
+    add_test(23, 43)
     # mnist_task.apply_async()
     a = USER_DATA
     return JsonResponse({"Status": 200, "message": "Training Starting"})
