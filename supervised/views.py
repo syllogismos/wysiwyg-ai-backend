@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from supervised.tasks import add_test, launch_sup_exp_task, launch_rl_exp_task
 from eschernode.settings import mongoClient
 from django.views.decorators.csrf import csrf_exempt
+from core.config import USER_DATA
 import json
 import time
 
@@ -10,6 +11,7 @@ import time
 def index(request):
     # add_test.apply_async([23, 43])
     # mnist_task.apply_async()
+    a = USER_DATA
     return JsonResponse({"Status": 200, "message": "Training Starting"})
 
 @csrf_exempt
