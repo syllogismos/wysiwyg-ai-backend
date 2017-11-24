@@ -123,6 +123,22 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+if 'ESCHERNODE_ENV' not in os.environ:
+    os.environ['ESCHERNODE_ENV'] = 'dev'
+
+if os.environ['ESCHERNODE_ENV'] == 'dev':
+    DEBUG = True
+    MONGO_HOST = 'localhost'
+    MONGO_PORT = 27017
+    MONGO_DB = 'eschernode'
+    FILEBEAT_LOGFILE = '/Users/anil/Code/escher/eschernode/filebeat/filebeat.log'
+
+elif os.environ['ESCHERNODE_ENV'] == 'prod':
+    DEBUG = False
+    MONGO_HOST = '172.30.0.169'
+    MONGO_PORT = 27017
+    MONGO_DB = 'eschernode'
+    FILEBEAT_LOGFILE = '/home/ubuntu/dashboard_backend/filebeat/filebeat.log'
 
 # Structlog config
 structlog.configure(
@@ -145,23 +161,10 @@ structlog.configure(
 logger = logging.getLogger('train_logs')
 logger.setLevel(logging.INFO)
 
-handler = WatchedFileHandler('filebeat/celery_worker.log')
+handler = WatchedFileHandler(FILEBEAT_LOGFILE)
 logger.addHandler(handler)
 
-if 'ESCHERNODE_ENV' not in os.environ:
-    os.environ['ESCHERNODE_ENV'] = 'dev'
 
-if os.environ['ESCHERNODE_ENV'] == 'dev':
-    DEBUG = True
-    MONGO_HOST = 'localhost'
-    MONGO_PORT = 27017
-    MONGO_DB = 'eschernode'
-
-elif os.environ['ESCHERNODE_ENV'] == 'prod':
-    DEBUG = False
-    MONGO_HOST = '172.30.0.169'
-    MONGO_PORT = 27017
-    MONGO_DB = 'eschernode'
 
 mongoClient = MongoClient(MONGO_HOST, MONGO_PORT, maxPoolSize=200, connect=False)
 
