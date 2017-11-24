@@ -149,7 +149,7 @@ logger.setLevel(logging.INFO)
 handler = WatchedFileHandler('filebeat/celery_worker.log')
 logger.addHandler(handler)
 
-if 'DJANGO_RUNSERVER' not in os.environ:
+if 'ESCHERNODE_ENV' not in os.environ:
     os.environ['ESCHERNODE_ENV'] = 'dev'
 
 if os.environ['ESCHERNODE_ENV'] == 'dev':
