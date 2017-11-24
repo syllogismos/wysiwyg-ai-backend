@@ -46,13 +46,11 @@ def launch_rl_exp(exp):
     """
     logger = structlog.get_logger('train_logs')
     log = logger.new(user=exp['user'], exp=str(exp['_id']))
-    log.info('exp_timeline', timeline={'message': 'Experiment Launched'})
-    print("lol")
+    log.info('exp_timeline', timeline={'message': 'Experiment Launched', 'level': 'info'})
     no_of_variants = len(exp['config']['variants'])
     print(no_of_variants)
     for variantIndex in range(no_of_variants):
-        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        log.info('exp_timeline',  timeline={'message': 'Launching machine for variant %s' %variantIndex, 'level': 'info'})
+        # log.info('exp_timeline',  timeline={'message': 'Launching machine for variant %s' %variantIndex, 'level': 'info'})
         instance = ec2.create_instances(
             MaxCount=1,
             MinCount=1,
@@ -84,7 +82,7 @@ def launch_rl_exp(exp):
             'variant': variantIndex,
             'instance_id': instance[0].instance_id,
             'private_ip': instance[0].private_ip_address,
-            'level': 'debug'
+            'level': 'info'
         })
 
     pass
