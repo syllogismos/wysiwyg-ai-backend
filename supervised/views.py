@@ -9,7 +9,7 @@ import time
 # Create your views here.
 def index(request):
     # add_test.apply_async([23, 43])
-    mnist_task.apply_async()
+    # mnist_task.apply_async()
     return JsonResponse({"Status": 200, "message": "Training Starting"})
 
 @csrf_exempt
