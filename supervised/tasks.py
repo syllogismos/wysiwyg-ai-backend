@@ -15,7 +15,7 @@ def add_test(a, b):
 
 
 def adding(a, b):
-    logger.info('adding a and b')
+    # logger.info('adding a and b')
     return a + b
 
 
