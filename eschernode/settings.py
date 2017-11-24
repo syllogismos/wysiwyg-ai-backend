@@ -28,7 +28,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+yh97%jk(goz&gcm(op9$h6j7ce$c9wliy#x_t0qva-=v8te@^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = ['172.30.0.251']
 
@@ -153,11 +152,13 @@ if 'ESCHERNODE_ENV' not in os.environ:
     os.environ['ESCHERNODE_ENV'] = 'dev'
 
 if os.environ['ESCHERNODE_ENV'] == 'dev':
+    DEBUG = True
     MONGO_HOST = 'localhost'
     MONGO_PORT = 27017
     MONGO_DB = 'eschernode'
 
 elif os.environ['ESCHERNODE_ENV'] == 'prod':
+    DEBUG = False
     MONGO_HOST = '172.30.0.169'
     MONGO_PORT = 27017
     MONGO_DB = 'eschernode'
