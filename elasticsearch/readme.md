@@ -10,9 +10,11 @@ restart elasticsearch instance with
 `sudo systemctl start elasticsearch`
 
 # Cerebro
-Start cerebro using the conf file in `elasticsearch/cerebro.conf` from this repository
+Start cerebro using the conf file in `elasticsearch/cerebro.conf` from this repository, put it in `conf/application.conf`
 
 
 you start it using the command 
 
 `bin/cerebro  -Dconfig.file=/some/other/dir/alternate.conf`
+
+or using the shell script `cerebro.sh` using `sh cerebro.sh`
