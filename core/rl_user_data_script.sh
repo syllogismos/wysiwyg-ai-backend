@@ -9,7 +9,8 @@
 # also source the conda env in this file
 # modifying bash script is not working so i change the PATH and PYTHONPATH in this script itself
 
-
+# start xvfb fake monitor so that gym will be able to record stuff
+xvfb-run -s "-screen 0 1400x900x24" /bin/bash
 # Get experimentid and variant index from tags
 INSTANCE_ID="`wget -qO- http://instance-data/latest/meta-data/instance-id`"
 REGION="`wget -qO- http://instance-data/latest/meta-data/placement/availability-zone | sed -e 's:\([0-9][0-9]*\)[a-z]*\$:\\1:'`"
