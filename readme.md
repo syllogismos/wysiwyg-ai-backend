@@ -1,5 +1,16 @@
 
+## Development
 
+### Start server for development
+```
+python manage.py runserver
+```
+### Start a celery worker
+```
+celery -A eschernode worker -l warning -Q mnist_test
+```
+
+## Notes
 ### Elasticsearch stuff
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html
@@ -23,7 +34,7 @@ supervisord for celery worker
 pm2 for the gunicorn server
 
 
-# Start server
+# Start server on Production
 
 pm2 start server.sh
 pm2 save

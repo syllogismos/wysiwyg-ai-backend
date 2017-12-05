@@ -24,6 +24,7 @@ def launchSupervised(request):
         json_body = json.loads(request.body.decode('utf-8'))
         # time.sleep(2)
         launch_sup_exp_task.apply_async([json_body['exp_id']])
+        # launch_sup_exp_task(json_body['exp_id'])
         return JsonResponse({"status": 200, "message": "Launching Supervised Experiment"})
 
 @csrf_exempt

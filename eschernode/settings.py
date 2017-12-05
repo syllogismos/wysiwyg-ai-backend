@@ -29,7 +29,6 @@ SECRET_KEY = '+yh97%jk(goz&gcm(op9$h6j7ce$c9wliy#x_t0qva-=v8te@^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['172.30.0.251']
 
 
 # Application definition
@@ -128,10 +127,11 @@ if 'ESCHERNODE_ENV' not in os.environ:
 
 if os.environ['ESCHERNODE_ENV'] == 'dev':
     DEBUG = True
-    MONGO_HOST = 'localhost'
+    MONGO_HOST = '52.2.113.244'
     MONGO_PORT = 27017
     MONGO_DB = 'eschernode'
     FILEBEAT_LOGFILE = '/Users/anil/Code/escher/eschernode/filebeat/filebeat.log'
+    ALLOWED_HOSTS = ['localhost']
 
 elif os.environ['ESCHERNODE_ENV'] == 'prod':
     DEBUG = False
@@ -139,6 +139,8 @@ elif os.environ['ESCHERNODE_ENV'] == 'prod':
     MONGO_PORT = 27017
     MONGO_DB = 'eschernode'
     FILEBEAT_LOGFILE = '/home/ubuntu/dashboard_backend/filebeat/filebeat.log'
+    ALLOWED_HOSTS = ['172.30.0.251']
+    
 
 # Structlog config
 structlog.configure(
