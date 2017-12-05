@@ -11,7 +11,9 @@
 
 # start xvfb fake monitor so that gym will be able to record stuff
 # https://gist.github.com/joschu/e42a050b1eb5cfbb1fdc667c3450467a
-xvfb-run -s "-screen 0 1400x900x24" /bin/bash
+# xvfb-run -s "-screen 0 1400x900x24" /bin/bash
+
+
 # Get experimentid and variant index from tags
 INSTANCE_ID="`wget -qO- http://instance-data/latest/meta-data/instance-id`"
 REGION="`wget -qO- http://instance-data/latest/meta-data/placement/availability-zone | sed -e 's:\([0-9][0-9]*\)[a-z]*\$:\\1:'`"
@@ -76,7 +78,7 @@ done & echo log sync initiated
 
 
 # start the experiment
-python -u sandbox/rocky/tf/launchers/algo_gym_stub.py --expId $EXPERIMENT --variantId $VARIANT
+xvfb-run -s "-screen 0 1400x900x24" python -u sandbox/rocky/tf/launchers/algo_gym_stub.py --expId $EXPERIMENT --variantId $VARIANT
 
 # Copy the checkpoint logs and user data logs one final time
 aws s3 sync --quiet /home/ubuntu/rllabpp/data/local/ s3://karaka_test/$EXPERIMENT/$VARIANT/
