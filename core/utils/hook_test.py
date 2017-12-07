@@ -10,11 +10,11 @@ import operator
 no_of_elems = lambda t: reduce(operator.mul, list(t.size()), 1)
 
 
-# nnm = getNNModelById('5a26ee11c82d0e7fecd5d2a0')
+# nnm = getNNModelById('5a2986c0d53e4dc3af967cfe')
 # model = EscherNet(nnm['network'])
 # input = Variable(torch.randn(1, 1, 28, 28))
 
-resnnm = getNNModelById('5a26f699d53e4dc3af967cf2')
+resnnm = getNNModelById('5a2986b5d53e4dc3af967cfd')
 model = EscherNet(resnnm['network'])
 input = Variable(torch.randn(1, 3, 300, 300))
 

@@ -6,11 +6,13 @@ import argparse, logging, structlog
 
 
 def start_exp_variant(exp_id, variant, log):
+    print(variant)
+    print(exp_id)
     exp = getExperimentById(exp_id)
     supervised_exp_single_variant(exp, int(variant), log)
 
 
-if __name__ == "__main__":
+if __name__ == "__main___":
     parser = argparse.ArgumentParser()
     parser.add_argument('--exp_id', help='Experiment id')
     parser.add_argument('--variant', help='Variant of the experiment to run')
@@ -20,9 +22,9 @@ if __name__ == "__main__":
     log.info('test_from_main', data={'message': 'from sup launcher', 'level': 'info'})
     start_exp_variant(args.exp_id, args.variant, log)
 
-if __name__ == '__main___':
+if __name__ == '__main__':
     logger = structlog.get_logger('train_logs')
-    log = logger.new(exp='5a271c3bd53e4dc3af967cfc', variant=0)
+    log = logger.new(exp='5a29873bd53e4dc3af967d00', variant=0)
     log.info("test_from_main_dot", data={'message': "from sup launcher", 'level': 'info'})
     # pdb.set_trace()
-    start_exp_variant('5a271c3bd53e4dc3af967cfc', 0, log)
+    start_exp_variant('5a29873bd53e4dc3af967d00', 0, log)

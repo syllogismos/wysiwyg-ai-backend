@@ -3,7 +3,7 @@ import json
 from collections import deque
 import torch.nn as nn
 
-
+mnist_net = '[{"coords":[50,200],"layer_type":"CN","inputs":[],"outputs":[1],"layerConfig":{"in_channels":"1","stride":"1","out_channels":"10","kernel_size":"5","layer_id":0,"padding":"0"}},{"coords":[50,250],"layer_type":"PL","inputs":[0],"outputs":[2],"layerConfig":{"padding":"0","pool_type":"maxpool","stride":"","kernel_size":"2","layer_id":1}},{"coords":[50,300],"layer_type":"AC","inputs":[1],"outputs":[3],"layerConfig":{"activation_fn":"ReLU","layer_id":2}},{"coords":[300,200],"layer_type":"CN","inputs":[2],"outputs":[4],"layerConfig":{"in_channels":"10","stride":"1","out_channels":"20","kernel_size":"5","layer_id":3,"padding":"0"}},{"coords":[300,250],"layer_type":"DR","inputs":[3],"outputs":[5],"layerConfig":{"percent":"0.5","layer_id":4}},{"coords":[300,300],"layer_type":"PL","inputs":[4],"outputs":[6],"layerConfig":{"padding":"0","pool_type":"maxpool","stride":"","kernel_size":"2","layer_id":5}},{"coords":[300,350],"layer_type":"AC","inputs":[5],"outputs":[7],"layerConfig":{"activation_fn":"ReLU","layer_id":6}},{"coords":[550,200],"layer_type":"RS","inputs":[6],"outputs":[8],"layerConfig":{"y":"320","x":"-1","layer_id":7}},{"coords":[550,250],"layer_type":"AF","inputs":[7],"outputs":[9],"layerConfig":{"in_features":"320","out_features":"50","layer_id":8}},{"coords":[550,300],"layer_type":"AC","inputs":[8],"outputs":[10],"layerConfig":{"activation_fn":"ReLU","layer_id":9}},{"coords":[550,350],"layer_type":"AF","inputs":[9],"outputs":[11],"layerConfig":{"in_features":"50","out_features":"10","layer_id":10}},{"coords":[550,400],"layer_type":"AC","inputs":[10],"outputs":[],"layerConfig":{"activation_fn":"log_softmax","layer_id":11}}]'
 
 class EscherNet(nn.Module):
 
@@ -18,6 +18,9 @@ class EscherNet(nn.Module):
         super(EscherNet, self).__init__()
         self.network = json.loads(fabricNetwork)
         self.network_modules = list(map(parse_single_node, self.network))
+        self.network_layer_ids = list(map(lambda x: x['layerConfig']['layer_id'], self.network))
+        # all layers must have unique layer id, we use this layer id as the id of the module in this module
+        assert len(self.network_layer_ids) == len(set(self.network_layer_ids))
         reshape_layers = filter(lambda n: n[1]['layer_type'] == 'RS', enumerate(self.network))
         self.reshape_inds = list(map(lambda n: n[0], reshape_layers))
         # print(reshape_inds)
@@ -27,7 +30,7 @@ class EscherNet(nn.Module):
                 self.backward_hook_registers.append(
                     module.register_backward_hook(save_grads_to_buffer_hook)
                 )
-                self.add_module(str(idx), module)
+                self.add_module(str(self.network_layer_ids[idx]), module)
         
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
