@@ -13,6 +13,7 @@ from torch.autograd import Variable
 from collections import deque
 import json, math, structlog
 import boto3
+# from core.utils.bad_grad_viz import register_hooks
 
 
 ec2 = boto3.resource('ec2')
@@ -218,9 +219,13 @@ def supervised_train(train_loader, model, nn_optimizer, loss_fn, epoch, log, log
         nn_optimizer.zero_grad()
         output = model(data)
         loss = loss_fn(output, target)
+        # if batch_idx % 10 == 0:
+        #     get_dot = register_hooks(loss)
         loss.backward()
         nn_optimizer.step()
         if batch_idx % 10 == 0:
+            # dot = get_dot()
+            # dot.save('dot_%s_%s.dot'%(epoch, batch_idx))
             log.info('train_log',
                      train_log = {
                          'epoch': epoch,

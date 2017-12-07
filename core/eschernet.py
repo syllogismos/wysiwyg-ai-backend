@@ -21,10 +21,14 @@ class EscherNet(nn.Module):
         self.network = json.loads(fabricNetwork)
         self.network_modules = list(map(parse_single_node, self.network))
         reshape_layers = filter(lambda n: n[1]['layer_type'] == 'RS', enumerate(self.network))
-        reshape_inds = list(map(lambda n: n[0], reshape_layers))
+        self.reshape_inds = list(map(lambda n: n[0], reshape_layers))
         # print(reshape_inds)
+        self.backward_hook_registers = []
         for idx, module in enumerate(self.network_modules):
-            if idx not in reshape_inds:
+            if idx not in self.reshape_inds:
+                self.backward_hook_registers.append(
+                    module.register_backward_hook(save_grads_to_buffer_hook)
+                )
                 self.add_module(str(idx), module)
         
         for m in self.modules():
@@ -56,7 +60,10 @@ class EscherNet(nn.Module):
         # return x #self.network[self.last_node]['x']
         return self.network[self.last_node]['x']
 
-    
+
+def save_grads_to_buffer_hook(self, grad_input, grad_output):
+    self.register_buffer('es_grad_output', grad_output)
+    self.register_buffer('es_grad_input', grad_input)
 
 
 def parse_single_node(node):
