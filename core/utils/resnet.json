@@ -1,0 +1,1179 @@
+[
+  {
+    "outputs": [
+      1
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "3",
+      "stride": "2",
+      "out_channels": "64",
+      "kernel_size": "7",
+      "layer_id": 0,
+      "padding": "3"
+    },
+    "inputs": [],
+    "coords": [
+      350,
+      50
+    ]
+  },
+  {
+    "outputs": [
+      2
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "64",
+      "momentum": "0.1",
+      "layer_id": 1
+    },
+    "inputs": [
+      0
+    ],
+    "coords": [
+      350,
+      100
+    ]
+  },
+  {
+    "outputs": [
+      3
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 2
+    },
+    "inputs": [
+      1
+    ],
+    "coords": [
+      350,
+      150
+    ]
+  },
+  {
+    "outputs": [
+      4,
+      9
+    ],
+    "layer_type": "PL",
+    "layerConfig": {
+      "padding": "1",
+      "pool_type": "maxpool",
+      "stride": "2",
+      "kernel_size": "3",
+      "layer_id": 3
+    },
+    "inputs": [
+      2
+    ],
+    "coords": [
+      350,
+      200
+    ]
+  },
+  {
+    "outputs": [
+      5
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "64",
+      "stride": "1",
+      "out_channels": "64",
+      "kernel_size": "3",
+      "layer_id": 4,
+      "padding": "1"
+    },
+    "inputs": [
+      3
+    ],
+    "coords": [
+      150,
+      300
+    ]
+  },
+  {
+    "outputs": [
+      6
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "64",
+      "momentum": "0.1",
+      "layer_id": 5
+    },
+    "inputs": [
+      4
+    ],
+    "coords": [
+      150,
+      350
+    ]
+  },
+  {
+    "outputs": [
+      7
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 6
+    },
+    "inputs": [
+      5
+    ],
+    "coords": [
+      150,
+      400
+    ]
+  },
+  {
+    "outputs": [
+      8
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "64",
+      "stride": "1",
+      "out_channels": "64",
+      "kernel_size": "3",
+      "layer_id": 7,
+      "padding": "1"
+    },
+    "inputs": [
+      6
+    ],
+    "coords": [
+      150,
+      450
+    ]
+  },
+  {
+    "outputs": [
+      9
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "64",
+      "momentum": "0.1",
+      "layer_id": 8
+    },
+    "inputs": [
+      7
+    ],
+    "coords": [
+      150,
+      500
+    ]
+  },
+  {
+    "outputs": [
+      10,
+      15
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 9
+    },
+    "inputs": [
+      3,
+      8
+    ],
+    "coords": [
+      150,
+      550
+    ]
+  },
+  {
+    "outputs": [
+      11
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "64",
+      "stride": "1",
+      "out_channels": "64",
+      "kernel_size": "3",
+      "layer_id": 10,
+      "padding": "1"
+    },
+    "inputs": [
+      9
+    ],
+    "coords": [
+      450,
+      600
+    ]
+  },
+  {
+    "outputs": [
+      12
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "64",
+      "momentum": "0.1",
+      "layer_id": 11
+    },
+    "inputs": [
+      10
+    ],
+    "coords": [
+      450,
+      650
+    ]
+  },
+  {
+    "outputs": [
+      13
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 12
+    },
+    "inputs": [
+      11
+    ],
+    "coords": [
+      450,
+      700
+    ]
+  },
+  {
+    "outputs": [
+      14
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "64",
+      "stride": "1",
+      "out_channels": "64",
+      "kernel_size": "3",
+      "layer_id": 13,
+      "padding": "1"
+    },
+    "inputs": [
+      12
+    ],
+    "coords": [
+      450,
+      750
+    ]
+  },
+  {
+    "outputs": [
+      15
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "64",
+      "momentum": "0.1",
+      "layer_id": 14
+    },
+    "inputs": [
+      13
+    ],
+    "coords": [
+      450,
+      800
+    ]
+  },
+  {
+    "outputs": [
+      16,
+      54
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 15
+    },
+    "inputs": [
+      9,
+      14
+    ],
+    "coords": [
+      450,
+      850
+    ]
+  },
+  {
+    "outputs": [
+      17
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "64",
+      "stride": "2",
+      "out_channels": "128",
+      "kernel_size": "3",
+      "layer_id": 16,
+      "padding": "1"
+    },
+    "inputs": [
+      15
+    ],
+    "coords": [
+      150,
+      900
+    ]
+  },
+  {
+    "outputs": [
+      18
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "128",
+      "momentum": "0.1",
+      "layer_id": 17
+    },
+    "inputs": [
+      16
+    ],
+    "coords": [
+      150,
+      950
+    ]
+  },
+  {
+    "outputs": [
+      19
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 18
+    },
+    "inputs": [
+      17
+    ],
+    "coords": [
+      150,
+      1000
+    ]
+  },
+  {
+    "outputs": [
+      20
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "128",
+      "stride": "1",
+      "out_channels": "128",
+      "kernel_size": "3",
+      "layer_id": 19,
+      "padding": "1"
+    },
+    "inputs": [
+      18
+    ],
+    "coords": [
+      150,
+      1050
+    ]
+  },
+  {
+    "outputs": [
+      21
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "128",
+      "momentum": "0.1",
+      "layer_id": 20
+    },
+    "inputs": [
+      19
+    ],
+    "coords": [
+      150,
+      1100
+    ]
+  },
+  {
+    "outputs": [
+      22,
+      27
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 21
+    },
+    "inputs": [
+      20,
+      55
+    ],
+    "coords": [
+      150,
+      1150
+    ]
+  },
+  {
+    "outputs": [
+      23
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "128",
+      "stride": "1",
+      "out_channels": "128",
+      "kernel_size": "3",
+      "layer_id": 22,
+      "padding": "1"
+    },
+    "inputs": [
+      21
+    ],
+    "coords": [
+      450,
+      1200
+    ]
+  },
+  {
+    "outputs": [
+      24
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "128",
+      "momentum": "0.1",
+      "layer_id": 23
+    },
+    "inputs": [
+      22
+    ],
+    "coords": [
+      450,
+      1250
+    ]
+  },
+  {
+    "outputs": [
+      25
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 24
+    },
+    "inputs": [
+      23
+    ],
+    "coords": [
+      450,
+      1300
+    ]
+  },
+  {
+    "outputs": [
+      26
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "128",
+      "stride": "1",
+      "out_channels": "128",
+      "kernel_size": "3",
+      "layer_id": 25,
+      "padding": "1"
+    },
+    "inputs": [
+      24
+    ],
+    "coords": [
+      450,
+      1350
+    ]
+  },
+  {
+    "outputs": [
+      27
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "128",
+      "momentum": "0.1",
+      "layer_id": 26
+    },
+    "inputs": [
+      25
+    ],
+    "coords": [
+      450,
+      1400
+    ]
+  },
+  {
+    "outputs": [
+      28,
+      56
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 27
+    },
+    "inputs": [
+      21,
+      26
+    ],
+    "coords": [
+      450,
+      1450
+    ]
+  },
+  {
+    "outputs": [
+      29
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "128",
+      "stride": "2",
+      "out_channels": "256",
+      "kernel_size": "3",
+      "layer_id": 28,
+      "padding": "1"
+    },
+    "inputs": [
+      27
+    ],
+    "coords": [
+      150,
+      1500
+    ]
+  },
+  {
+    "outputs": [
+      30
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "256",
+      "momentum": "0.1",
+      "layer_id": 29
+    },
+    "inputs": [
+      28
+    ],
+    "coords": [
+      150,
+      1550
+    ]
+  },
+  {
+    "outputs": [
+      31
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 30
+    },
+    "inputs": [
+      29
+    ],
+    "coords": [
+      150,
+      1600
+    ]
+  },
+  {
+    "outputs": [
+      32
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "256",
+      "stride": "1",
+      "out_channels": "256",
+      "kernel_size": "3",
+      "layer_id": 31,
+      "padding": "1"
+    },
+    "inputs": [
+      30
+    ],
+    "coords": [
+      150,
+      1650
+    ]
+  },
+  {
+    "outputs": [
+      33
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "256",
+      "momentum": "0.1",
+      "layer_id": 32
+    },
+    "inputs": [
+      31
+    ],
+    "coords": [
+      150,
+      1700
+    ]
+  },
+  {
+    "outputs": [
+      34,
+      39
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 33
+    },
+    "inputs": [
+      32,
+      57
+    ],
+    "coords": [
+      150,
+      1750
+    ]
+  },
+  {
+    "outputs": [
+      35
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "256",
+      "stride": "1",
+      "out_channels": "256",
+      "kernel_size": "3",
+      "layer_id": 34,
+      "padding": "1"
+    },
+    "inputs": [
+      33
+    ],
+    "coords": [
+      450,
+      1800
+    ]
+  },
+  {
+    "outputs": [
+      36
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "256",
+      "momentum": "0.1",
+      "layer_id": 35
+    },
+    "inputs": [
+      34
+    ],
+    "coords": [
+      450,
+      1850
+    ]
+  },
+  {
+    "outputs": [
+      37
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 36
+    },
+    "inputs": [
+      35
+    ],
+    "coords": [
+      450,
+      1900
+    ]
+  },
+  {
+    "outputs": [
+      38
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "256",
+      "stride": "1",
+      "out_channels": "256",
+      "kernel_size": "3",
+      "layer_id": 37,
+      "padding": "1"
+    },
+    "inputs": [
+      36
+    ],
+    "coords": [
+      450,
+      1950
+    ]
+  },
+  {
+    "outputs": [
+      39
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "256",
+      "momentum": "0.1",
+      "layer_id": 38
+    },
+    "inputs": [
+      37
+    ],
+    "coords": [
+      450,
+      2000
+    ]
+  },
+  {
+    "outputs": [
+      40,
+      58
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 39
+    },
+    "inputs": [
+      33,
+      38
+    ],
+    "coords": [
+      450,
+      2050
+    ]
+  },
+  {
+    "outputs": [
+      41
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "256",
+      "stride": "2",
+      "out_channels": "512",
+      "kernel_size": "3",
+      "layer_id": 40,
+      "padding": "1"
+    },
+    "inputs": [
+      39
+    ],
+    "coords": [
+      150,
+      2100
+    ]
+  },
+  {
+    "outputs": [
+      42
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "512",
+      "momentum": "0.1",
+      "layer_id": 41
+    },
+    "inputs": [
+      40
+    ],
+    "coords": [
+      150,
+      2150
+    ]
+  },
+  {
+    "outputs": [
+      43
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 42
+    },
+    "inputs": [
+      41
+    ],
+    "coords": [
+      150,
+      2200
+    ]
+  },
+  {
+    "outputs": [
+      44
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "512",
+      "stride": "1",
+      "out_channels": "512",
+      "kernel_size": "3",
+      "layer_id": 43,
+      "padding": "1"
+    },
+    "inputs": [
+      42
+    ],
+    "coords": [
+      150,
+      2250
+    ]
+  },
+  {
+    "outputs": [
+      45
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "512",
+      "momentum": "0.1",
+      "layer_id": 44
+    },
+    "inputs": [
+      43
+    ],
+    "coords": [
+      150,
+      2300
+    ]
+  },
+  {
+    "outputs": [
+      46,
+      53
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 45
+    },
+    "inputs": [
+      44,
+      59
+    ],
+    "coords": [
+      150,
+      2350
+    ]
+  },
+  {
+    "outputs": [
+      47
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "512",
+      "stride": "1",
+      "out_channels": "512",
+      "kernel_size": "3",
+      "layer_id": 46,
+      "padding": "1"
+    },
+    "inputs": [
+      45
+    ],
+    "coords": [
+      450,
+      2400
+    ]
+  },
+  {
+    "outputs": [
+      48
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "512",
+      "momentum": "0.1",
+      "layer_id": 47
+    },
+    "inputs": [
+      46
+    ],
+    "coords": [
+      450,
+      2450
+    ]
+  },
+  {
+    "outputs": [
+      49
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 48
+    },
+    "inputs": [
+      47
+    ],
+    "coords": [
+      450,
+      2500
+    ]
+  },
+  {
+    "outputs": [
+      50
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "512",
+      "stride": "1",
+      "out_channels": "512",
+      "kernel_size": "3",
+      "layer_id": 49,
+      "padding": "1"
+    },
+    "inputs": [
+      48
+    ],
+    "coords": [
+      450,
+      2550
+    ]
+  },
+  {
+    "outputs": [
+      53
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "512",
+      "momentum": "0.1",
+      "layer_id": 50
+    },
+    "inputs": [
+      49
+    ],
+    "coords": [
+      450,
+      2600
+    ]
+  },
+  {
+    "outputs": [
+      60
+    ],
+    "layer_type": "PL",
+    "layerConfig": {
+      "padding": "0",
+      "pool_type": "avgpool",
+      "stride": "7",
+      "kernel_size": "7",
+      "layer_id": 51
+    },
+    "inputs": [
+      53
+    ],
+    "coords": [
+      250,
+      2750
+    ]
+  },
+  {
+    "outputs": [],
+    "layer_type": "AF",
+    "layerConfig": {
+      "in_features": "512",
+      "out_features": "1000",
+      "layer_id": 52
+    },
+    "inputs": [
+      60
+    ],
+    "coords": [
+      250,
+      2850
+    ]
+  },
+  {
+    "outputs": [
+      51
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 53
+    },
+    "inputs": [
+      45,
+      50
+    ],
+    "coords": [
+      250,
+      2700
+    ]
+  },
+  {
+    "outputs": [
+      55
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "64",
+      "stride": "2",
+      "out_channels": "128",
+      "kernel_size": "1",
+      "layer_id": 54,
+      "padding": "0"
+    },
+    "inputs": [
+      15
+    ],
+    "coords": [
+      550,
+      1000
+    ]
+  },
+  {
+    "outputs": [
+      21
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "128",
+      "momentum": "0.1",
+      "layer_id": 55
+    },
+    "inputs": [
+      54
+    ],
+    "coords": [
+      550,
+      1050
+    ]
+  },
+  {
+    "outputs": [
+      57
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "128",
+      "stride": "2",
+      "out_channels": "256",
+      "kernel_size": "1",
+      "layer_id": 56,
+      "padding": "0"
+    },
+    "inputs": [
+      27
+    ],
+    "coords": [
+      550,
+      1600
+    ]
+  },
+  {
+    "outputs": [
+      33
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "256",
+      "momentum": "0.1",
+      "layer_id": 57
+    },
+    "inputs": [
+      56
+    ],
+    "coords": [
+      550,
+      1650
+    ]
+  },
+  {
+    "outputs": [
+      59
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "256",
+      "stride": "2",
+      "out_channels": "512",
+      "kernel_size": "1",
+      "layer_id": 58,
+      "padding": "0"
+    },
+    "inputs": [
+      39
+    ],
+    "coords": [
+      550,
+      2200
+    ]
+  },
+  {
+    "outputs": [
+      45
+    ],
+    "layer_type": "BN",
+    "layerConfig": {
+      "epsilon": "0.00001",
+      "num_features": "512",
+      "momentum": "0.1",
+      "layer_id": 59
+    },
+    "inputs": [
+      58
+    ],
+    "coords": [
+      550,
+      2250
+    ]
+  },
+  {
+    "outputs": [
+      52
+    ],
+    "layer_type": "RS",
+    "layerConfig": {
+      "y": "-1",
+      "x": "0",
+      "layer_id": 60
+    },
+    "inputs": [
+      51
+    ],
+    "coords": [
+      250,
+      2800
+    ]
+  }
+]

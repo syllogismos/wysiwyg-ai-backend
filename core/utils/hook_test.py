@@ -10,10 +10,15 @@ import operator
 no_of_elems = lambda t: reduce(operator.mul, list(t.size()), 1)
 
 
-nnm = getNNModelById('5a26ee11c82d0e7fecd5d2a0')
-model = EscherNet(nnm['network'])
+# nnm = getNNModelById('5a26ee11c82d0e7fecd5d2a0')
+# model = EscherNet(nnm['network'])
+# input = Variable(torch.randn(1, 1, 28, 28))
 
-input = Variable(torch.randn(1, 1, 28, 28))
+resnnm = getNNModelById('5a26f699d53e4dc3af967cf2')
+model = EscherNet(resnnm['network'])
+input = Variable(torch.randn(1, 3, 300, 300))
+
+
 target = Variable(torch.LongTensor([3]))
 loss_fn = nn.CrossEntropyLoss()
 
@@ -32,6 +37,10 @@ def printnorm(self, input, output):
     # print('output norm:', output.data.norm())
     # print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     pass
+
+def forward_hook(self, input, output):
+    self.register_buffer('input_buffer', input)
+    self.register_buffer('output_buffer', output)
     
 
 def printgradnorm(self, grad_input, grad_output):
@@ -59,7 +68,7 @@ def printgradnorm(self, grad_input, grad_output):
     self.register_buffer('grad_output_percent_zero', zeroes/total)
     self.register_buffer('grad_output_percent_pos', positive/total)
     self.register_buffer('grad_output_percent_neg', negative/total)
-    self.register_buffer('grad_output_explode', grad_output.ne(grad_output).any() or grad_output.gt(1e6).any())
+    self.register_buffer('grad_output_explode', grad_output[0].data.ne(grad_output[0].data).any() or grad_output[0].data.gt(1e6).any())
     
 
 # h1 = model.network_modules[0].register_forward_hook(printnorm)
@@ -67,14 +76,20 @@ def printgradnorm(self, grad_input, grad_output):
 h = []
 hb = []
 for module in model.modules():
-    print(module)
-    hb.append(module.register_backward_hook(printgradnorm))
-    h.append(module.register_forward_hook(printnorm))
+    # print(module)
+    # hb.append(module.register_backward_hook(printgradnorm))
+    h.append(module.register_forward_hook(forward_hook))
 
 
 out = model(input)
 err = loss_fn(out, target)
 err.backward()
+"""
+[(m, getattr(model, str(m)).es_grad_input) for m in list(range(12)) if m not in model.reshape_inds]
+[(m, getattr(model, str(m)).es_grad_output[0].size()) for m in list(range(12)) if m not in model.reshape_inds]
+[(m, getattr(model, str(m)).input_buffer) for m in list(range(12)) if m not in model.reshape_inds]
+[(m, getattr(model, str(m)).output_buffer.size()) for m in list(range(12)) if m not in model.reshape_inds]
+"""
 print([getattr(model, str(m)).output_norm for m in list(range(12)) if m not in model.reshape_inds])
 out = model(input)
 err = loss_fn(out, target)

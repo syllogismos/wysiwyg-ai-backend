@@ -1,0 +1,219 @@
+[
+  {
+    "outputs": [
+      1
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "1",
+      "stride": "1",
+      "out_channels": "10",
+      "kernel_size": "5",
+      "layer_id": 0,
+      "padding": "0"
+    },
+    "inputs": [],
+    "coords": [
+      50,
+      200
+    ]
+  },
+  {
+    "outputs": [
+      2
+    ],
+    "layer_type": "PL",
+    "layerConfig": {
+      "padding": "0",
+      "pool_type": "maxpool",
+      "stride": "",
+      "kernel_size": "2",
+      "layer_id": 1
+    },
+    "inputs": [
+      0
+    ],
+    "coords": [
+      50,
+      250
+    ]
+  },
+  {
+    "outputs": [
+      3
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 2
+    },
+    "inputs": [
+      1
+    ],
+    "coords": [
+      50,
+      300
+    ]
+  },
+  {
+    "outputs": [
+      4
+    ],
+    "layer_type": "CN",
+    "layerConfig": {
+      "in_channels": "10",
+      "stride": "1",
+      "out_channels": "20",
+      "kernel_size": "5",
+      "layer_id": 3,
+      "padding": "0"
+    },
+    "inputs": [
+      2
+    ],
+    "coords": [
+      300,
+      200
+    ]
+  },
+  {
+    "outputs": [
+      5
+    ],
+    "layer_type": "DR",
+    "layerConfig": {
+      "percent": "0.5",
+      "layer_id": 4
+    },
+    "inputs": [
+      3
+    ],
+    "coords": [
+      300,
+      250
+    ]
+  },
+  {
+    "outputs": [
+      6
+    ],
+    "layer_type": "PL",
+    "layerConfig": {
+      "padding": "0",
+      "pool_type": "maxpool",
+      "stride": "",
+      "kernel_size": "2",
+      "layer_id": 5
+    },
+    "inputs": [
+      4
+    ],
+    "coords": [
+      300,
+      300
+    ]
+  },
+  {
+    "outputs": [
+      7
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 6
+    },
+    "inputs": [
+      5
+    ],
+    "coords": [
+      300,
+      350
+    ]
+  },
+  {
+    "outputs": [
+      8
+    ],
+    "layer_type": "RS",
+    "layerConfig": {
+      "y": "320",
+      "x": "-1",
+      "layer_id": 7
+    },
+    "inputs": [
+      6
+    ],
+    "coords": [
+      550,
+      200
+    ]
+  },
+  {
+    "outputs": [
+      9
+    ],
+    "layer_type": "AF",
+    "layerConfig": {
+      "in_features": "320",
+      "out_features": "50",
+      "layer_id": 8
+    },
+    "inputs": [
+      7
+    ],
+    "coords": [
+      550,
+      250
+    ]
+  },
+  {
+    "outputs": [
+      10
+    ],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "ReLU",
+      "layer_id": 9
+    },
+    "inputs": [
+      8
+    ],
+    "coords": [
+      550,
+      300
+    ]
+  },
+  {
+    "outputs": [
+      11
+    ],
+    "layer_type": "AF",
+    "layerConfig": {
+      "in_features": "50",
+      "out_features": "10",
+      "layer_id": 10
+    },
+    "inputs": [
+      9
+    ],
+    "coords": [
+      550,
+      350
+    ]
+  },
+  {
+    "outputs": [],
+    "layer_type": "AC",
+    "layerConfig": {
+      "activation_fn": "log_softmax",
+      "layer_id": 11
+    },
+    "inputs": [
+      10
+    ],
+    "coords": [
+      550,
+      400
+    ]
+  }
+]
