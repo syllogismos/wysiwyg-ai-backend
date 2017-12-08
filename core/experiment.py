@@ -349,7 +349,7 @@ def supervised_test(test_loader, model, loss_fn, epoch, log, log_info):
         correct += pred.eq(target.data.view_as(pred)).cpu().sum()
     test_loss /= len(test_loader.dataset)
     log.info('val_log',
-             test_log = {
+             val_log = {
                  'epoch': epoch,
                  'loss': test_loss,
                  'variant': log_info['variant']
