@@ -15,6 +15,7 @@ import logging, structlog
 from logging.handlers import WatchedFileHandler
 from structlog.threadlocal import wrap_dict
 from pymongo import MongoClient
+from core.config import HOME_DIR
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -125,12 +126,15 @@ STATIC_URL = '/static/'
 if 'ESCHERNODE_ENV' not in os.environ:
     os.environ['ESCHERNODE_ENV'] = 'dev'
 
+if not os.path.isdir(os.path.join(HOME_DIR, 'results')):
+    os.makedirs(os.path.join(HOME_DIR, 'results'))
+
 if os.environ['ESCHERNODE_ENV'] == 'dev':
     DEBUG = True
     MONGO_HOST = '52.2.113.244'
     MONGO_PORT = 27017
     MONGO_DB = 'eschernode'
-    FILEBEAT_LOGFILE = '/Users/anil/Code/escher/eschernode/filebeat/filebeat.log'
+    FILEBEAT_LOGFILE = os.path.join(HOME_DIR, 'results', 'filebeat.log')
     ALLOWED_HOSTS = ['localhost']
 
 elif os.environ['ESCHERNODE_ENV'] == 'prod':
@@ -138,7 +142,7 @@ elif os.environ['ESCHERNODE_ENV'] == 'prod':
     MONGO_HOST = '172.30.0.169'
     MONGO_PORT = 27017
     MONGO_DB = 'eschernode'
-    FILEBEAT_LOGFILE = '/home/ubuntu/dashboard_backend/filebeat/filebeat.log'
+    FILEBEAT_LOGFILE = os.path.join(HOME_DIR, 'results', 'filebeat.log')
     ALLOWED_HOSTS = ['172.30.0.251']
     
 

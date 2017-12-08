@@ -12,17 +12,17 @@ def start_exp_variant(exp_id, variant, log):
     supervised_exp_single_variant(exp, int(variant), log)
 
 
-if __name__ == "__main___":
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--exp_id', help='Experiment id')
-    parser.add_argument('--variant', help='Variant of the experiment to run')
+    parser.add_argument('--expId', help='Experiment id')
+    parser.add_argument('--variantId', help='Variant of the experiment to run')
     args = parser.parse_args()
     logger = structlog.get_logger('train_logs')
     log = logger.new(exp=args.exp_id, variant=args.variant)
     log.info('test_from_main', data={'message': 'from sup launcher', 'level': 'info'})
     start_exp_variant(args.exp_id, args.variant, log)
 
-if __name__ == '__main__':
+if __name__ == '__main___':
     logger = structlog.get_logger('train_logs')
     log = logger.new(exp='5a29873bd53e4dc3af967d00', variant=0)
     log.info("test_from_main_dot", data={'message': "from sup launcher", 'level': 'info'})

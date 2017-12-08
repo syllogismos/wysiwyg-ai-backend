@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from core.mongo_queries import getNNModelById, getExperimentById, getUserById
 from core.mongo_queries import getDatasetById
-from core.config import RLLAB_AMI, USER_DATA
+from core.config import RLLAB_AMI, USER_DATA, RL_USER_DATA, HOME_DIR
 
 from core.eschernet import EscherNet
 import torch.optim as optim
@@ -11,8 +11,9 @@ import torch
 from torchvision import datasets, transforms
 from torch.autograd import Variable
 from collections import deque
-import json, math, structlog
+import json, math, structlog, operator, os
 import boto3
+from functools import reduce
 # from core.utils.bad_grad_viz import register_hooks
 
 
@@ -57,7 +58,7 @@ def launch_rl_exp(exp):
             MinCount=1,
             ImageId=RLLAB_AMI,
             InstanceType=exp['config']['machine_type'],
-            UserData=USER_DATA,
+            UserData=RL_USER_DATA,
             KeyName='facebook',
             NetworkInterfaces=[{
                 'SubnetId': 'subnet-347a7e1c',
@@ -209,8 +210,60 @@ def supervised_exp_single_variant(exp, variant_idx, log):
     # Traning
     for epoch in range(1, epochs + 1):
         supervised_train(train_loader, model, nn_optimizer, loss_fn, epoch, log, log_info)
+        checkpoint_epoch(model, nn_optimizer, epoch, log_info, exp, log)
         supervised_test(test_loader, model, loss_fn, epoch, log, log_info)
 
+def checkpoint_epoch(model, nn_optimizer, epoch, log_info, exp, log):
+    checkpoint = {
+        'epoch': epoch,
+        'model': model.state_dict(),
+        'optimizer': nn_optimizer.state_dict(),
+        'experiment': exp['_id'],
+        'variant': log_info['variant']
+    }
+    filename = os.path.join(HOME_DIR, 'results', 'checkpoint_%s.pth'%epoch)
+    torch.save(checkpoint, filename)
+
+    layer_stats = {}
+    for layer_id in model.network_layer_ids:
+        if layer_id[1] != 'RS':
+            layer_stats[layer_id[0]] = get_layer_stats(model,layer_id[0])
+    stats_filename = os.path.join(HOME_DIR, 'results/stats_%s.json'%epoch)
+    json.dump(layer_stats, open(stats_filename, 'w'))
+
+def get_layer_stats(model, layer_id):
+    no_of_elems = lambda t: reduce(operator.mul, list(t.size()), 1) # no of elements in a tensor, multiply all the dimensions
+    module = getattr(model, str(layer_id))
+    grad_output_data = module.es_grad_output[0].data
+    total = no_of_elems(grad_output_data)
+    zeroes = grad_output_data.eq(0.0).sum()
+    positive = grad_output_data.gt(0.0).sum()
+    negative = grad_output_data.lt(0.0).sum()
+    exploded = grad_output_data.ne(grad_output_data).any() or grad_output_data.gt(1e6).any()
+    stats = {
+        'norm': grad_output_data.norm(),
+        'zeros': zeroes/total,
+        'positive': positive/total,
+        'negative': negative/total,
+        'exploded': exploded
+    }
+    return stats
+
+
+"""
+    self.register_buffer('output_norm', grad_output[0].data.norm())
+    self.register_buffer('es_grad_output', grad_output)
+    self.register_buffer('es_grad_input', grad_input)
+    total = no_of_elems(grad_output[0].data)
+    zeroes = grad_output[0].data.eq(0.0).sum()
+    positive = grad_output[0].data.gt(0.0).sum()
+    negative = grad_output[0].data.lt(0.0).sum()
+    self.register_buffer('grad_output_percent_zero', zeroes/total)
+    self.register_buffer('grad_output_percent_pos', positive/total)
+    self.register_buffer('grad_output_percent_neg', negative/total)
+    self.register_buffer('grad_output_explode', grad_output[0].data.ne(grad_output[0].data).any() or grad_output[0].data.gt(1e6).any())
+    
+"""
 
 def supervised_train(train_loader, model, nn_optimizer, loss_fn, epoch, log, log_info):
     model.train()

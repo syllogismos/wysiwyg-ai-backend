@@ -43,6 +43,7 @@ export AWS_DEFAULT_REGION='us-east-1'
 # wait until filebeat is started
 until pids=$(pidof filebeat)
 do   
+    echo "Waiting for filebeat to start"
     sleep 5
 done
 
@@ -74,7 +75,7 @@ while /bin/true; do
         # Spot instance not yet marked for termination.
         sleep 5
     fi
-done & echo log sync initiated
+done & echo "log sync initiated"
 
 
 # start the experiment

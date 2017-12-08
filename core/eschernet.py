@@ -18,9 +18,9 @@ class EscherNet(nn.Module):
         super(EscherNet, self).__init__()
         self.network = json.loads(fabricNetwork)
         self.network_modules = list(map(parse_single_node, self.network))
-        self.network_layer_ids = list(map(lambda x: x['layerConfig']['layer_id'], self.network))
+        self.network_layer_ids = list(map(lambda x: (x['layerConfig']['layer_id'], x['layer_type']), self.network))
         # all layers must have unique layer id, we use this layer id as the id of the module in this module
-        assert len(self.network_layer_ids) == len(set(self.network_layer_ids))
+        assert len(self.network_layer_ids) == len(set(map(lambda x: x[0], self.network_layer_ids)))
         reshape_layers = filter(lambda n: n[1]['layer_type'] == 'RS', enumerate(self.network))
         self.reshape_inds = list(map(lambda n: n[0], reshape_layers))
         # print(reshape_inds)
@@ -30,7 +30,7 @@ class EscherNet(nn.Module):
                 self.backward_hook_registers.append(
                     module.register_backward_hook(save_grads_to_buffer_hook)
                 )
-                self.add_module(str(self.network_layer_ids[idx]), module)
+                self.add_module(str(self.network_layer_ids[idx][0]), module)
         
         for m in self.modules():
             if isinstance(m, nn.Conv2d):

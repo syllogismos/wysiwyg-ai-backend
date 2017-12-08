@@ -36,9 +36,11 @@ filebeat.prospectors:
   paths:
     - /home/ubuntu/dashboard_backend/filebeat/*.log
     - /home/ubuntu/rllabpp/data/local/structlogs.log
+    - /home/ubuntu/dashboard_backend/results/filebeat.log
     # - /var/log/*.log
     - /Users/anil/Code/elk/*.log
     - /Users/anil/Code/tiny-imagenet/*.log
+    - /Users/anil/Code/escher/eschernode/results/filebeat.log
     #- c:\programdata\elasticsearch\logs\*
 
   document_type: log
