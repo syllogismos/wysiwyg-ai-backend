@@ -38,6 +38,10 @@ export ESCHERNODE_ENV=prod
 
 cd /home/ubuntu/dashboard_backend
 
+# if [ ! -d "$DIRECTORY" ]; then
+#   # Control will enter here if $DIRECTORY doesn't exist.
+# fi
+
 git fetch --all
 git reset --hard origin/master
 

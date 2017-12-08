@@ -2,6 +2,7 @@ import os
 
 
 RLLAB_AMI = "ami-f8fb9d82"
+SUPERVISED_AMI = "ami-8f076bf5"
 
 if 'ESCHERNODE_ENV' not in os.environ:
     os.environ['ESCHERNODE_ENV'] = 'dev'
@@ -17,3 +18,4 @@ else:
     USER_DATA = open('/Users/anil/Code/escher/eschernode/core/rl_user_data_script.sh', 'rb').read()
 
 RL_USER_DATA = open(os.path.join(HOME_DIR, 'core/rl_user_data_script.sh'), 'rb').read()
+SUP_USER_DATA = open(os.path.join(HOME_DIR, 'core/sup_user_data_script.sh'), 'rb').read()

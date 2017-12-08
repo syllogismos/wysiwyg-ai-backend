@@ -2,7 +2,8 @@ from __future__ import print_function
 
 from core.mongo_queries import getNNModelById, getExperimentById, getUserById
 from core.mongo_queries import getDatasetById
-from core.config import RLLAB_AMI, USER_DATA, RL_USER_DATA, HOME_DIR
+from core.config import RLLAB_AMI, RL_USER_DATA, HOME_DIR
+from core.config import SUPERVISED_AMI, SUP_USER_DATA
 
 from core.eschernet import EscherNet
 import torch.optim as optim
@@ -33,13 +34,58 @@ def launch_exp(exp):
         launch_rl_exp(exp)
         pass
     elif exp['type'] == 'supervised':
-        logger = structlog.get_logger('train_logs')
-        log = logger.new(user=exp['user'], exp=str(exp['_id']))
-        log.info('exp_timeline', timeline={'message': 'Experiment Launched', 'level': 'info'})
-        launch_supervised_exp(exp, log)
+        launch_sup_exp(exp)
+        # logger = structlog.get_logger('train_logs')
+        # log = logger.new(user=exp['user'], exp=str(exp['_id']))
+        # log.info('exp_timeline', timeline={'message': 'Experiment Launched', 'level': 'info'})
+        # launch_supervised_exp(exp, log)
         pass
     pass
 
+def launch_sup_exp(exp):
+    """
+    exp: exp dict
+    start ec2 instances
+    """
+    logger = structlog.get_logger('train_logs')
+    log = logger.new(user=exp['user'], exp=str(exp['_id']))
+    log.info('exp_timeline', timeline={'message': 'Experiment Launched', 'level': 'info'})
+    no_of_variants = len(exp['config']['variants'])
+    print(no_of_variants)
+    for variantIndex in range(no_of_variants):
+        instance = ec2.create_instances(
+            MaxCount=1,
+            MinCount=1,
+            ImageId=SUPERVISED_AMI,
+            InstanceType=exp['config']['machine_type'],
+            UserData=SUP_USER_DATA,
+            KeyName='facebook',
+            NetworkInterfaces=[{
+                'SubnetId': 'subnet-347a7e1c',
+                'Groups': ['sg-8ed5a8eb'],
+                'AssociatePublicIpAddress': True,
+                'DeviceIndex': 0
+            }],
+            TagSpecifications=[
+                {
+                    'ResourceType': 'instance',
+                    'Tags': [
+                        { 'Key': 'Name', 'Value': 'Sup Experiment' },
+                        { 'Key': 'ExperimentId', 'Value': str(exp['_id']) },
+                        { 'Key': 'VariantIndex', 'Value': str(variantIndex) }
+                    ]
+                }
+            ]
+        )
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        print(instance)
+        log.info('exp_timeline', timeline={
+            'message': 'Machine successfully started for variant %s' %variantIndex,
+            'variant': variantIndex,
+            'instance_id': instance[0].instance_id,
+            'private_ip': instance[0].private_ip_address,
+            'level': 'info'
+        })
 
 def launch_rl_exp(exp):
     """
@@ -80,7 +126,7 @@ def launch_rl_exp(exp):
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         print(instance)
         log.info('exp_timeline', timeline={
-            'message': 'Machine successfully started for varint %s' %variantIndex,
+            'message': 'Machine successfully started for variant %s' %variantIndex,
             'variant': variantIndex,
             'instance_id': instance[0].instance_id,
             'private_ip': instance[0].private_ip_address,
@@ -162,7 +208,7 @@ def supervised_exp_single_variant(exp, variant_idx, log):
 
     if dataset_name == 'MNIST':
         train_loader = torch.utils.data.DataLoader(
-            datasets.MNIST('./data/mnist', train=True, download=True, 
+            datasets.MNIST(os.path.join(HOME_DIR, 'data/mnist'), train=True, download=True, 
                         transform=transforms.Compose([
                             transforms.ToTensor(),
                             transforms.Normalize((0.1307, ), (0.3081, ))
@@ -180,7 +226,7 @@ def supervised_exp_single_variant(exp, variant_idx, log):
     elif dataset_name == 'tiny-imagenet-test':
         train_loader = torch.utils.data.DataLoader(
             datasets.ImageFolder(
-                './data/tiny-imagenet-200/train',
+                os.path.join(HOME_DIR, 'data/tiny-imagenet-200/train'),
                 transforms.Compose([
                     transforms.RandomSizedCrop(224),
                     transforms.ToTensor(),
@@ -193,7 +239,7 @@ def supervised_exp_single_variant(exp, variant_idx, log):
         
         test_loader = torch.utils.data.DataLoader(
             datasets.ImageFolder(
-                './data/tiny-imagenet-200/val',
+                os.path.join(HOME_DIR, 'data/tiny-imagenet-200/val'),
                 transforms.Compose([
                     transforms.Scale(256),
                     transforms.CenterCrop(224),
