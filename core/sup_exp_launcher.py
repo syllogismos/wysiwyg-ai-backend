@@ -5,7 +5,7 @@ import argparse, logging, structlog
 # import pdb
 
 
-def start_exp_variant(exp_id, variant, log):
+def start_exp_variant(exp_id, variant):
     print(variant)
     print(exp_id)
     exp = getExperimentById(exp_id)
@@ -32,11 +32,7 @@ if __name__ == "__main__":
     # logger = structlog.get_logger('train_logs')
     # log = logger.new(exp=args.expId, variant=args.variantId)
     # log.info('test_from_main', data={'message': 'from sup launcher', 'level': 'info'})
-    start_exp_variant(args.expId, args.variantId, log)
+    start_exp_variant(args.expId, args.variantId)
 
 if __name__ == '__main___':
-    logger = structlog.get_logger('train_logs')
-    log = logger.new(exp='5a29873bd53e4dc3af967d00', variant=0)
-    log.info("test_from_main_dot", data={'message': "from sup launcher", 'level': 'info'})
-    # pdb.set_trace()
-    start_exp_variant('5a29873bd53e4dc3af967d00', 0, log)
+    start_exp_variant('5a29873bd53e4dc3af967d00', 0)
