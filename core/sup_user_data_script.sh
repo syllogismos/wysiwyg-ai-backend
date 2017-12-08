@@ -44,7 +44,7 @@ git reset --hard origin/master
 aws s3 sync --quiet /home/ubuntu/dashboard_backend/results/ s3://karaka_test/$EXPERIMENT/$VARIANT/
 
 while /bin/true; do
-    aws s3 sync  --quiet /home/ubuntu/dashboard_backend/results/ s3://karaka_test/$EXPERIMENT/$VARIANT/
+    aws s3 sync --quiet /home/ubuntu/dashboard_backend/results/ s3://karaka_test/$EXPERIMENT/$VARIANT/
     sleep 300
 done & echo "sync initiated"
 while /bin/true; do

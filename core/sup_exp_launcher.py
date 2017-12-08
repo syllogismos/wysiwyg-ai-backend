@@ -18,9 +18,9 @@ if __name__ == "__main__":
     parser.add_argument('--variantId', help='Variant of the experiment to run')
     args = parser.parse_args()
     logger = structlog.get_logger('train_logs')
-    log = logger.new(exp=args.exp_id, variant=args.variant)
+    log = logger.new(exp=args.expId, variant=args.variantId)
     log.info('test_from_main', data={'message': 'from sup launcher', 'level': 'info'})
-    start_exp_variant(args.exp_id, args.variant, log)
+    start_exp_variant(args.expId, args.variantId, log)
 
 if __name__ == '__main___':
     logger = structlog.get_logger('train_logs')
