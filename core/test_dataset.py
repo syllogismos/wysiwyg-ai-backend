@@ -23,8 +23,8 @@ model = EscherNet(nnmodel['network'])
 lr = 0.01
 momentum = 0.5
 epochs = 2
-batch_size = 10
-test_batch_size = 10
+batch_size = 2
+test_batch_size = 2
 seed = 1
 loss_fn = F.__dict__['nll_loss']
 optimizer = optim.__dict__['SGD']
@@ -40,7 +40,7 @@ train_loader = torch.utils.data.DataLoader(
                                          std=[0.229, 0.224, 0.225])
                 ])
             ),
-            batch_size=10, shuffle=True
+            batch_size=batch_size, shuffle=True
         )
 
 test_loader = torch.utils.data.DataLoader(
@@ -54,7 +54,7 @@ test_loader = torch.utils.data.DataLoader(
                                          std=[0.229, 0.224, 0.225])
                 ])
             ),
-            batch_size=10, shuffle=False
+            batch_size=test_batch_size, shuffle=False
         )
 
 print("Training one epoch starts")
