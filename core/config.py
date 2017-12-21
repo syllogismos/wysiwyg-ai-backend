@@ -1,8 +1,8 @@
 import os
 
 
-RLLAB_AMI = "ami-f8fb9d82"
-SUPERVISED_AMI = "ami-8f076bf5"
+RLLAB_AMI = "ami-1e007b64"
+SUPERVISED_AMI = "ami-2c0d7656"
 
 if 'ESCHERNODE_ENV' not in os.environ:
     os.environ['ESCHERNODE_ENV'] = 'dev'

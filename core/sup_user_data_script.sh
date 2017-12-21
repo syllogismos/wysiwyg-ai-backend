@@ -25,7 +25,22 @@ done
 
 export AWS_DEFAULT_REGION='us-east-1'
 
+# Set metricbeat experiment and variant fields in metricbeat.yml
+# metricbeat is not a service that starts when machine starts
+/home/ubuntu/yq_linux_amd64 w -i /etc/metricbeat/metricbeat.yml fields.experiment $EXPERIMENT
+/home/ubuntu/yq_linux_amd64 w -i /etc/metricbeat/metricbeat.yml fields.variant $VARIANT
+
+systemctl start metricbeat
+
+until pids=$(pidof metricbeat)
+do
+    echo "Waiting for metricbeat to start"
+    sleep 5
+done
+
+
 # wait until filebeat is started
+# filebeat is set to start with the machine
 until pids=$(pidof filebeat)
 do   
     echo "Waiting for filebeat to start"
