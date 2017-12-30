@@ -201,38 +201,50 @@ def supervised_exp_single_variant(exp, variant_idx, log):
     # Creating optimizer
     optimizer = optim.__dict__[exp_config['optim']]
 
-    nn_optimizer = optimizer(model.parameters(), lr=lr, momentum=momentum)
+    if exp_config['optim'] == 'SGD':
+        nn_optimizer = optimizer(model.parameters(), lr=lr, momentum=momentum)
+    elif exp_config['optim'] == 'Adam':
+        nn_optimizer = optimizer(model.parameters(), lr=lr)
+
     loss_fn = F.__dict__[loss_type]
+
+    # Building Data Transforms
+    train_transform = compose_transform_from_config(exp_config['form_params'], prefix='train')
+    val_transform = compose_transform_from_config(exp_config['form_params'], prefix='val')
 
     # Loading dataset
 
     if dataset_name == 'MNIST':
         train_loader = torch.utils.data.DataLoader(
             datasets.MNIST(os.path.join(HOME_DIR, 'data/mnist'), train=True, download=True, 
-                        transform=transforms.Compose([
-                            transforms.ToTensor(),
-                            transforms.Normalize((0.1307, ), (0.3081, ))
-                        ])),
+                        # transform=transforms.Compose([
+                        #     transforms.ToTensor(),
+                        #     transforms.Normalize((0.1307, ), (0.3081, ))
+                        # ])),
+                        transform=train_transform),
                         batch_size=batch_size, shuffle=True
         )
 
         test_loader = torch.utils.data.DataLoader(
-            datasets.MNIST('./data/mnist', train=False, transform=transforms.Compose([
-                transforms.ToTensor(),
-                transforms.Normalize((0.1307, ), (0.3081, ))
-            ])),
+            datasets.MNIST('./data/mnist', train=False,
+                    # transform=transforms.Compose([
+                    #     transforms.ToTensor(),
+                    #     transforms.Normalize((0.1307, ), (0.3081, ))
+                    # ])),
+                    transform=val_transform),
             batch_size=test_batch_size, shuffle=True
         )
     elif dataset_name == 'tiny-imagenet-test':
         train_loader = torch.utils.data.DataLoader(
             datasets.ImageFolder(
                 os.path.join(HOME_DIR, 'data/tiny-imagenet-200/train'),
-                transforms.Compose([
-                    transforms.RandomSizedCrop(224),
-                    transforms.ToTensor(),
-                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                         std=[0.229, 0.224, 0.225])
-                ])
+                train_transform
+                # transforms.Compose([
+                #     transforms.RandomSizedCrop(224),
+                #     transforms.ToTensor(),
+                #     transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                #                          std=[0.229, 0.224, 0.225])
+                # ])
             ),
             batch_size=batch_size, shuffle=True
         )
@@ -240,13 +252,14 @@ def supervised_exp_single_variant(exp, variant_idx, log):
         test_loader = torch.utils.data.DataLoader(
             datasets.ImageFolder(
                 os.path.join(HOME_DIR, 'data/tiny-imagenet-200/val'),
-                transforms.Compose([
-                    transforms.Scale(256),
-                    transforms.CenterCrop(224),
-                    transforms.ToTensor(),
-                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                         std=[0.229, 0.224, 0.225])
-                ])
+                # transforms.Compose([
+                #     transforms.Scale(256),
+                #     transforms.CenterCrop(224),
+                #     transforms.ToTensor(),
+                #     transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                #                          std=[0.229, 0.224, 0.225])
+                # ])
+                val_transform
             ),
             batch_size=test_batch_size, shuffle=False
         )
@@ -258,6 +271,42 @@ def supervised_exp_single_variant(exp, variant_idx, log):
         supervised_train(train_loader, model, nn_optimizer, loss_fn, epoch, log, log_info)
         checkpoint_epoch(model, nn_optimizer, epoch, log_info, exp, log)
         supervised_test(test_loader, model, loss_fn, epoch, log, log_info)
+
+def compose_transform_from_config(form_params, prefix):
+
+    params_dict = {
+        'Scale': 'scale',
+        'CenterCrop': 'center_crop',
+        'RandomSizedCrop': 'random_sized_crop'
+    }
+
+    transform_types = form_params[prefix + '_transforms']
+    transforms_compose = []
+    # for transform_type in transform_types:
+    #     if transform_type == 'Scale':
+    #         scale_params = int(form_params[prefix + '_scale'])
+    #         transforms_compose.append(transforms.__dict__['Scale'](scale_params))
+    #     elif transform_type == 'CenterCrop':
+    #         center_crop_params = int(form_params[prefix + '_center_crop'])
+    #         transforms_compose.append(transforms.__dict__['CenterCrop'](center_crop_params))
+    #     elif transform_type == 'RandomSizedCrop':
+    #         random_sized_crop_params = int(form_params[prefix + '_random_sized_crop'])
+    #         transforms_compose.append(transforms.__dict__['RandomSizedCrop'](random_sized_crop_params))
+    for transform_type in transform_types:
+        if transform_type in ['Scale', 'RandomSizedCrop', 'CenterCrop']:
+            transform_params = int(form_params[prefix + '_' + params_dict[transform_type]])
+            transforms_compose.append(transforms.__dict__[transform_type](transform_params))
+    
+    transforms_compose.append(transforms.ToTensor())
+
+    for transform_type in transform_types:
+        if transform_type == 'Normalize':
+            normalize_mean = list(map(float, form_params[prefix + '_normalize_mean'].split(',')))
+            normalize_std = list(map(float, form_params[prefix + '_normalize_std'].split(',')))
+            transforms_compose.append(transforms.__dict__['Normalize'](mean=normalize_mean, std=normalize_std))
+    
+    return transforms.Compose(transforms_compose)
+
 
 def checkpoint_epoch(model, nn_optimizer, epoch, log_info, exp, log):
     checkpoint = {
