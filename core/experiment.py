@@ -15,6 +15,8 @@ from collections import deque
 import json, math, structlog, operator, os
 import boto3
 from functools import reduce
+import zipfile
+import urllib.request
 # from core.utils.bad_grad_viz import register_hooks
 
 
@@ -175,8 +177,20 @@ def supervised_exp_single_variant(exp, variant_idx, log):
     """
     launch a supervised experiment
     """
-    # dataset = getDatasetById(exp['dataset'])
-    dataset_name = exp['dataset']
+    if exp['dataset'] in ['MNIST', 'tiny-imagenet-test']:
+        dataset_name = exp['dataset']
+    else:
+        dataset = getDatasetById(exp['dataset'])
+        dataset_name = dataset['name']
+        try:
+            S3_ZIP_FILE = os.path.join(HOME_DIR, 's3_data.zip')
+            urllib.request.urlretrieve(dataset['s3'], S3_ZIP_FILE)
+            with open(S3_ZIP_FILE, 'rb') as f:
+                z = zipfile.ZipFile(f)
+                z.extractall(os.path.join(HOME_DIR, 's3_data')) # files structure is HOME_DIR/s3_data/data/train
+        except:
+            print("downloading and zipping data from link failed")
+
     nnmodel = getNNModelById(exp['model'])
     network = nnmodel['network']
 
@@ -259,6 +273,22 @@ def supervised_exp_single_variant(exp, variant_idx, log):
                 #     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                 #                          std=[0.229, 0.224, 0.225])
                 # ])
+                val_transform
+            ),
+            batch_size=test_batch_size, shuffle=False
+        )
+    else:
+        train_loader = torch.utils.data.DataLoader(
+            datasets.ImageFolder(
+                os.path.join(HOME_DIR, 's3_data/data/train'),
+                train_transform
+            ),
+            batch_size=batch_size, shuffle=True
+        )
+
+        test_loader = torch.utils.data.DataLoader(
+            datasets.ImageFolder(
+                os.path.join(HOME_DIR, 's3_data/data/val'),
                 val_transform
             ),
             batch_size=test_batch_size, shuffle=False
