@@ -99,3 +99,22 @@ Userful links:
 4. http://pytorch.org/
 
 
+## S3 karaka_test Bucket ACL
+To allow all the mp4 files to be read from dashboard url
+```
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1514905660784",
+    "Statement": [
+        {
+            "Sid": "Stmt1514905654924",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::karaka_test/*.mp4"
+        }
+    ]
+}
+```
+
+
