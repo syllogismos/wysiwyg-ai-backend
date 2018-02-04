@@ -183,12 +183,22 @@ def supervised_exp_single_variant(exp, variant_idx, log):
         dataset = getDatasetById(exp['dataset'])
         dataset_name = dataset['name']
         try:
+            log.info('exp_timeline', timeline={
+                'message': 'Downloading data on variant %s' %variant_idx,
+                'variant': variant_idx,
+                'level': 'info'
+            })
             S3_ZIP_FILE = os.path.join(HOME_DIR, 's3_data.zip')
             urllib.request.urlretrieve(dataset['s3'], S3_ZIP_FILE)
             with open(S3_ZIP_FILE, 'rb') as f:
                 z = zipfile.ZipFile(f)
                 z.extractall(os.path.join(HOME_DIR, 's3_data')) # files structure is HOME_DIR/s3_data/data/train
         except:
+            log.info('exp_timeline', timeline={
+                'message': 'Downloading data on variant %s failed' %variant_idx,
+                'variant': variant_idx,
+                'level': 'error'
+            })
             print("downloading and zipping data from link failed")
 
     nnmodel = getNNModelById(exp['model'])
