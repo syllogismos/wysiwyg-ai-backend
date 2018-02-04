@@ -197,7 +197,7 @@ def supervised_exp_single_variant(exp, variant_idx, log):
             log.info('exp_timeline', timeline={
                 'message': 'Downloading data on variant %s failed' %variant_idx,
                 'variant': variant_idx,
-                'level': 'error'
+                'level': 'danger'
             })
             print("downloading and zipping data from link failed")
 
