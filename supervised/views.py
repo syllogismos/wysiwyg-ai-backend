@@ -34,6 +34,6 @@ def launchRL(request):
     if request.method == 'POST':
         json_body = json.loads(request.body.decode('utf-8'))
         print(json_body['exp_id'])
-        launch_rl_exp_task.apply([json_body['exp_id']])
+        launch_rl_exp_task.apply_async([json_body['exp_id']])
         # launch_rl_exp_task(json_body['exp_id'])
         return JsonResponse({"status": 200, "message": "Launching RL experiment"})
