@@ -358,8 +358,20 @@ def checkpoint_epoch(model, nn_optimizer, epoch, log_info, exp, log):
     }
     filename = os.path.join(HOME_DIR, 'results', 'checkpoint_%s.pth'%epoch)
 
-    # Deleting checkpoints 5 epochs older to not max out space in disk
-    MAX_CHECKPOINTS = 5
+
+    torch.save(checkpoint, filename)
+
+    # Make sure the size of the checkpoints is less than 10GB.
+    # hacky way of handling and saving checkpoints
+    # the checkpoints are backedup using aws s3 sync in the user script
+    # if a checkpoint is more than 10GB you only maintain two checkpoints
+    # this is very hacky way of doing things.
+    CHECKPOINT_SIZE = os.path.getsize(filename)
+    if CHECKPOINT_SIZE < 10*1e9:
+        MAX_CHECKPOINTS = math.floor(10*1e9/CHECKPOINT_SIZE)
+    else:
+        print("Size of a single checkpoint is more than 10GB")
+        MAX_CHECKPOINTS = 2
     if epoch > MAX_CHECKPOINTS:
         old_filename = os.path.join(HOME_DIR, 'results', 'checkpoint_%s.pth'%(epoch-MAX_CHECKPOINTS))
         if os.path.exists(old_filename):
@@ -367,8 +379,6 @@ def checkpoint_epoch(model, nn_optimizer, epoch, log_info, exp, log):
                 os.remove(old_filename)
             except OSError:
                 print("error while remove old checkpoint", old_filename)
-
-    torch.save(checkpoint, filename)
 
     layer_stats = {}
     for layer_id in model.network_layer_ids:
