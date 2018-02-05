@@ -357,6 +357,17 @@ def checkpoint_epoch(model, nn_optimizer, epoch, log_info, exp, log):
         'variant': log_info['variant']
     }
     filename = os.path.join(HOME_DIR, 'results', 'checkpoint_%s.pth'%epoch)
+
+    # Deleting checkpoints 5 epochs older to not max out space in disk
+    MAX_CHECKPOINTS = 5
+    if epoch > MAX_CHECKPOINTS:
+        old_filename = os.path.join(HOME_DIR, 'results', 'checkpoint_%s.pth'%(epoch-MAX_CHECKPOINTS))
+        if os.path.exists(old_filename):
+            try:
+                os.remove(old_filename)
+            except OSError:
+                print("error while remove old checkpoint", old_filename)
+
     torch.save(checkpoint, filename)
 
     layer_stats = {}
