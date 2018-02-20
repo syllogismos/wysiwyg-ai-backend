@@ -51,7 +51,7 @@ class EscherNet(nn.Module):
 
     def forward(self, x):
         for i in self.topological_sort:
-            print(self.network[i])
+            # print(self.network[i])
             if len(self.network[i]['inputs']) == 0:
                 self.network[i]['x'] = self.network_modules[i](x)
             else:
@@ -59,7 +59,7 @@ class EscherNet(nn.Module):
                     self.network[i]['x'] = self.network_modules[i](sum(map(lambda y: self.network[y]['x'], self.network[i]['inputs'])))
                 else:
                     self.network[i]['x'] = self.network_modules[i](list(map(lambda y: self.network[y]['x'], self.network[i]['inputs'])))
-            print(self.network[i]['x'].size())
+            # print(self.network[i]['x'].size())
         # make this more general the final edge case, hardcoded reshape layer here to make resnet18 work
         # x = self.network[self.topological_sort[-2]]['x']
         # x = x.view(x.size(0), -1)
