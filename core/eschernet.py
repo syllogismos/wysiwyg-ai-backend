@@ -2,6 +2,7 @@ import math
 import json
 from collections import deque
 import torch.nn as nn
+import torch
 
 mnist_net = '[{"coords":[50,200],"layer_type":"CN","inputs":[],"outputs":[1],"layerConfig":{"in_channels":"1","stride":"1","out_channels":"10","kernel_size":"5","layer_id":0,"padding":"0"}},{"coords":[50,250],"layer_type":"PL","inputs":[0],"outputs":[2],"layerConfig":{"padding":"0","pool_type":"maxpool","stride":"","kernel_size":"2","layer_id":1}},{"coords":[50,300],"layer_type":"AC","inputs":[1],"outputs":[3],"layerConfig":{"activation_fn":"ReLU","layer_id":2}},{"coords":[300,200],"layer_type":"CN","inputs":[2],"outputs":[4],"layerConfig":{"in_channels":"10","stride":"1","out_channels":"20","kernel_size":"5","layer_id":3,"padding":"0"}},{"coords":[300,250],"layer_type":"DR","inputs":[3],"outputs":[5],"layerConfig":{"percent":"0.5","layer_id":4}},{"coords":[300,300],"layer_type":"PL","inputs":[4],"outputs":[6],"layerConfig":{"padding":"0","pool_type":"maxpool","stride":"","kernel_size":"2","layer_id":5}},{"coords":[300,350],"layer_type":"AC","inputs":[5],"outputs":[7],"layerConfig":{"activation_fn":"ReLU","layer_id":6}},{"coords":[550,200],"layer_type":"RS","inputs":[6],"outputs":[8],"layerConfig":{"y":"320","x":"-1","layer_id":7}},{"coords":[550,250],"layer_type":"AF","inputs":[7],"outputs":[9],"layerConfig":{"in_features":"320","out_features":"50","layer_id":8}},{"coords":[550,300],"layer_type":"AC","inputs":[8],"outputs":[10],"layerConfig":{"activation_fn":"ReLU","layer_id":9}},{"coords":[550,350],"layer_type":"AF","inputs":[9],"outputs":[11],"layerConfig":{"in_features":"50","out_features":"10","layer_id":10}},{"coords":[550,400],"layer_type":"AC","inputs":[10],"outputs":[],"layerConfig":{"activation_fn":"log_softmax","layer_id":11}}]'
 
@@ -21,7 +22,7 @@ class EscherNet(nn.Module):
         self.network_layer_ids = list(map(lambda x: (x['layerConfig']['layer_id'], x['layer_type']), self.network))
         # all layers must have unique layer id, we use this layer id as the id of the module in this module
         assert len(self.network_layer_ids) == len(set(map(lambda x: x[0], self.network_layer_ids)))
-        reshape_layers = filter(lambda n: n[1]['layer_type'] == 'RS', enumerate(self.network))
+        reshape_layers = filter(lambda n: n[1]['layer_type'] == 'RS' or n[1]['layer_type'] == 'ML', enumerate(self.network))
         self.reshape_inds = list(map(lambda n: n[0], reshape_layers))
         # print(reshape_inds)
         self.backward_hook_registers = []
@@ -50,10 +51,15 @@ class EscherNet(nn.Module):
 
     def forward(self, x):
         for i in self.topological_sort:
+            print(self.network[i])
             if len(self.network[i]['inputs']) == 0:
                 self.network[i]['x'] = self.network_modules[i](x)
             else:
-                self.network[i]['x'] = self.network_modules[i](sum(map(lambda y: self.network[y]['x'], self.network[i]['inputs'])))
+                if self.network[i]['layer_type'] != 'ML':
+                    self.network[i]['x'] = self.network_modules[i](sum(map(lambda y: self.network[y]['x'], self.network[i]['inputs'])))
+                else:
+                    self.network[i]['x'] = self.network_modules[i](list(map(lambda y: self.network[y]['x'], self.network[i]['inputs'])))
+            print(self.network[i]['x'].size())
         # make this more general the final edge case, hardcoded reshape layer here to make resnet18 work
         # x = self.network[self.topological_sort[-2]]['x']
         # x = x.view(x.size(0), -1)
@@ -80,7 +86,12 @@ def parse_single_node(node):
         kernel_size = int(config['kernel_size'])
         stride = int(config['stride'])
         padding = int(config['padding'])
-        return nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding)
+        if 'conv_type' not in config:
+            return nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding)
+        elif config['conv_type'] == 'ConvTranspose2d':
+            return nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride, padding)
+        else: # config['conv_type'] == 'Conv2d':
+            return nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding)
     if layer_type == 'AF':
         in_features = int(config['in_features'])
         out_features = int(config['out_features'])
@@ -124,6 +135,11 @@ def parse_single_node(node):
         if x == 0:
             return lambda z: z.view(z.size(0), y)
         return lambda z: z.view(x, y)
+    if layer_type == 'ML': # Merge Layer
+        if config['merge_type'] == 'Sum':
+            return lambda z: sum(z)
+        if config['merge_type'] == 'Concat':
+            return lambda z: torch.cat(z, dim=int(config['dim']))
     else:
         raise NotImplementedError
 
