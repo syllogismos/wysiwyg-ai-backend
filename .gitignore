@@ -2,6 +2,7 @@ db.sqlite3
 *.pyc
 *.logs
 *.log
+*.swp
 .vscode/
 data/
 results/*.pth
