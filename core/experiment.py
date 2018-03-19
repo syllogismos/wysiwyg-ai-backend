@@ -349,9 +349,16 @@ def compose_transform_from_config(form_params, prefix):
 
 
 def checkpoint_epoch(model, nn_optimizer, epoch, log_info, exp, log):
+    state_dict = model.state_dict()
+    # Delete the keys containing gradients stats, as the checkpoint size is very huge otherwise
+    for key in list(state_dict.keys()):
+        if 'es_grad_output' in key or 'es_grad_input' in key:
+            del(state_dict[key])
+    # print(type(state_dict))
+    # print(state_dict.keys())
     checkpoint = {
         'epoch': epoch,
-        'model': model.state_dict(),
+        'model': state_dict,
         'optimizer': nn_optimizer.state_dict(),
         'experiment': exp['_id'],
         'variant': log_info['variant']
