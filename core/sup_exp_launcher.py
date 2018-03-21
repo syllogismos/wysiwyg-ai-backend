@@ -19,7 +19,7 @@ def start_exp_variant(exp_id, variant):
     supervised_exp_single_variant(exp, int(variant), log)
     log.info('exp_timeline', timeline={
         "message": "Training done in Variant %s, and machine terminating" %variant,
-        "level": "info",
+        "level": "danger",
         "variant": variant
     })
 

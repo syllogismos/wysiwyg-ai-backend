@@ -86,7 +86,7 @@ def launch_sup_exp(exp):
             'variant': variantIndex,
             'instance_id': instance[0].instance_id,
             'private_ip': instance[0].private_ip_address,
-            'level': 'info'
+            'level': 'success'
         })
 
 def launch_rl_exp(exp):
