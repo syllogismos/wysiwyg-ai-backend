@@ -118,3 +118,82 @@ To allow all the mp4 files to be read from dashboard url
 ```
 
 
+## Elasticsearch scripts to update and stuff
+```
+GET /filebeat*/_search
+{
+  "query": {
+    "term": {"json.event": "exp_timeline"}
+  }
+}
+
+GET /filebeat*/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "json.event": "exp_timeline"
+          }
+        },
+        {
+          "term": {
+            "json.exp": "5ab4c3f68d76b7696f2b8f11"
+          }
+        }
+      ]
+    }
+  },
+  "size": 100
+}
+
+GET filebeat-2018.03.23/doc/AWJSGxy8iJHeu3XJ3o--
+
+POST filebeat-2018.03.23/doc/AWJSCfIAiJHeu3XJ3o4s/_update?pretty
+{
+  "doc": {
+    "json": {
+      "timeline": {
+        "level": "success"
+      }
+    }
+  }
+}
+
+#AWJSCfIAiJHeu3XJ3o4t
+POST filebeat-2018.03.23/doc/AWJSCfIAiJHeu3XJ3o4t/_update?pretty
+{
+  "doc": {
+    "json": {
+      "timeline": {
+        "level": "success"
+      }
+    }
+  }
+}
+
+POST filebeat-2018.03.23/doc/AWJSNVwMiJHeu3XJ3pQx/_update?pretty
+{
+  "doc": {
+    "json": {
+      "timeline": {
+        "level": "danger"
+      }
+    }
+  }
+}
+
+POST filebeat-2018.03.23/doc/AWJSNRhUiJHeu3XJ3pQo/_update?pretty
+{
+  "doc": {
+    "json": {
+      "timeline": {
+        "level": "danger"
+      }
+    }
+  }
+}
+```
+
+
