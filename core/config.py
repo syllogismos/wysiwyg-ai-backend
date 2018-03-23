@@ -1,7 +1,7 @@
 import os
 
 
-RLLAB_AMI = "ami-1e007b64"
+RLLAB_AMI = "ami-f4d50589"
 SUPERVISED_AMI = "ami-2c0d7656"
 
 if 'ESCHERNODE_ENV' not in os.environ:
